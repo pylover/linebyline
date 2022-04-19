@@ -1,8 +1,9 @@
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
 
 import Test.Framework
-import Data.List.NonEmpty
+import Data.List.NonEmpty hiding (length)
 
+import HackLine.Helpers
 import HackLine.Tokenizer
 
 main = htfMain htf_thisModulesTests
@@ -15,7 +16,7 @@ test_tokenizer_dump = do
   assertEqual "(foo (bar baz))" $ dump
       (Group ((Only "foo") :| [Group ((Only "bar") :| [Only "baz"])]))
 
-test_tokenizet_monoid = do
+test_tokenizer_monoid = do
   assertEqual Empty $ Empty <> (Empty :: Token String)
   assertEqual (Only "foo") $ Empty <> Only "foo"
   assertEqual (Only "foo") $ Only "foo" <> Empty
@@ -45,8 +46,6 @@ test_tokenizer = do
        [Group (Only "Bar" :| [Group (Only "Baz," :| [Only "qux"])])])) $
     tokenize "" "Foo (Bar (Baz, qux))"
 
-test_mPar = do
-  assertEqual ("foo", "") (mPar 0 "foo" "")   
-  assertEqual ("foo (bar) baz", "") (mPar 0 "" "foo (bar) baz)")
-  assertEqual ("foo (bar) baz", " qux (quux)") 
-    (mPar 0 "" "foo (bar) baz) qux (quux)")
+test_tokenizer_functor = do
+  assertEqual (length <$> (Group (Only "foo" :| [Only "quxx"]))) 
+    (Group (Only 3 :| [Only 4]))

@@ -4,8 +4,7 @@ module HackLine.Tokenizer where
 import Data.List
 import Data.List.NonEmpty hiding (tail, init)
 
-class Dumper a where
-  dump :: a -> String
+import HackLine.Helpers
 
 data Token a 
   = Empty
@@ -30,12 +29,11 @@ instance Semigroup (Token a) where
 instance Monoid (Token a) where 
   mempty = Empty 
 
-mPar :: Int -> String -> String -> (String, String)
-mPar _ left "" = (left, [])
-mPar i left ('(':xs) = mPar (i + 1) (left ++ "(") xs
-mPar 0 left (')':xs) = (left, xs)
-mPar i left (')':xs) = mPar (i - 1) (left ++ ")") xs
-mPar i left (x:xs) = mPar i (left ++ [x]) xs
+instance Functor Token where
+  fmap _ Empty = Empty
+  fmap f (Only a) = Only (f a)
+  fmap f (Group (a :| [])) = f <$> a
+  fmap f (Group (a :| xs)) = (f <$> a) <> (f <$> (Group (fromList xs) ))
 
 tokenize :: String -> String -> Token String
 tokenize "" "" = Empty
@@ -43,6 +41,6 @@ tokenize "" (' ':xs) = tokenize "" xs
 tokenize cur "" = Only cur
 tokenize cur (' ':xs) = Only cur <> tokenize "" xs
 tokenize cur ('(':xs) = 
-  (tokenize cur "") <> (Group ((tokenize "" xp) :| [])) <> (tokenize "" ps)
-  where (xp, ps) = mPar 0 "" xs
+  let (xp, ps) = mPar 0 "" xs
+  in (tokenize cur "") <> (Group ((tokenize "" xp) :| [])) <> (tokenize "" ps)
 tokenize cur (x:xs) = tokenize (cur ++ [x]) xs
