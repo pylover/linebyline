@@ -29,10 +29,24 @@ test_tokenizet_monoid = do
   assertEqual (Group (Only "foo" :| [Only "bar", Only "baz"])) 
     $ Group (Only "foo" :| []) <> Group (Only "bar" :| [Only "baz"])
   
-  assertEqual (Group (Only "foo" :| [Only "bar"])) $ (Only "foo") <> (Only "bar")
+  assertEqual (Group (Only "foo" :| [Only "bar"])) $ (Only "foo") 
+    <> (Only "bar")
 
 test_tokenizer = do
-  assertEqual (tokenize "" " Foo Bar Baz ") ["Foo", "Bar", "Baz"]
-  -- assertEqual (tokenize "" "Foo (Bar Baz)") ["Foo", "(", "Bar", "Baz"]
+  assertEqual ((dump.tokenize "") " Foo Bar Baz ") "(Foo Bar Baz)"
 
+  assertEqual (tokenize "" " Foo Bar Baz ") 
+    $ Group ((Only "Foo") :| [Only "Bar", Only "Baz"])
 
+  assertEqual (Group (Only "Foo" :| [Group (Only "Bar" :| [Only "Baz"])])) $
+    tokenize "" "Foo (Bar Baz)"
+     
+  assertEqual (Group (Only "Foo" :|
+       [Group (Only "Bar" :| [Group (Only "Baz," :| [Only "qux"])])])) $
+    tokenize "" "Foo (Bar (Baz, qux))"
+
+test_mPar = do
+  assertEqual ("foo", "") (mPar 0 "foo" "")   
+  assertEqual ("foo (bar) baz", "") (mPar 0 "" "foo (bar) baz)")
+  assertEqual ("foo (bar) baz", " qux (quux)") 
+    (mPar 0 "" "foo (bar) baz) qux (quux)")
