@@ -31,8 +31,8 @@ test_tokenizet_monoid = do
   
   assertEqual (Group (Only "foo" :| [Only "bar"])) $ (Only "foo") <> (Only "bar")
 
--- test_tokenizer = do
---   assertEqual (tokenize "" " Foo Bar Baz ") ["Foo", "Bar", "Baz"]
+test_tokenizer = do
+  assertEqual (tokenize "" " Foo Bar Baz ") ["Foo", "Bar", "Baz"]
   -- assertEqual (tokenize "" "Foo (Bar Baz)") ["Foo", "(", "Bar", "Baz"]
 
 

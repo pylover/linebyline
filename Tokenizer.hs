@@ -30,11 +30,11 @@ instance Semigroup (Token a) where
 instance Monoid (Token a) where 
   mempty = Empty 
 
--- tokenize :: String a => a -> a -> Token a
--- tokenize "" "" = Empty
--- tokenize "" (' ':xs) = tokenize "" xs
--- tokenize cur "" = Only cur
--- tokenize cur (' ':xs) = Only cur ++ tokenize "" xs
--- tokenize cur (x:xs) = tokenize (cur ++ [x]) xs
+tokenize :: String a => a -> a -> Token a
+tokenize "" "" = Empty
+tokenize "" (' ':xs) = tokenize "" xs
+tokenize cur "" = Only cur
+tokenize cur (' ':xs) = Only cur <> tokenize "" xs
+tokenize cur (x:xs) = tokenize (cur ++ [x]) xs
 
 
