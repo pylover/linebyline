@@ -30,9 +30,9 @@ a >>= b: line -> a -> b -> print out
 
 ## Functions
 
-split :: str -> [str] -> [str]
-join :: str -> [str] -> [str]
-break :: break the file
-omit ::  omit current line
-print :: [str] -> [str]
+- `split :: str -> [str] -> [str]`
+- `join :: str -> [str] -> [str]`
+- `break :: break the file`
+- `omit ::  omit current line`
+- `print :: [str] -> [str]`
 
