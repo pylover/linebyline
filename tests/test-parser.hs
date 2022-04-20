@@ -2,15 +2,18 @@
 
 import Test.Framework
 
+import HackLine.Tokenizer
 import HackLine.Parser
+import HackLine.Helpers
 
 main = htfMain htf_thisModulesTests
 
--- test_show = do
---   assertEqual "print foo bar" $ show (Func "print" [Value "foo", Value "bar"])
---   assertEqual "foo + bar" $ show (Infix (Value "foo") "+" (Value "bar"))
+test_dump = do
+  assertEqual "print foo bar"
+    $ dump (Func "print" [Literal "foo", Literal "bar"])
+  assertEqual "foo + bar" 
+    $ dump (Infix (Literal "foo") "+" (Literal "bar"))
 
--- test_matchParenthesis = do
---   assertEqual matchParenthesis 0 "" "foo bar (baz))"
--- test_parser = do
---   assertEqual (parse "print foo") (Func "print" ["foo"])
+-- test_parse = do
+--   assertEqual (Func "print" "foo" :| []) 
+--     $ parse <$> (tokenize "" "print foo") 
