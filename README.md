@@ -20,8 +20,13 @@ hackline [opts] -- "Pattern" do a b c >>= do x` -- "Pattern 2" do ...
 
 ## Operators
 
+```
 a >> b: (line -> a -> print out) then (line -> b -> print out)
+```
+
+```
 a >>= b: line -> a -> b -> print out
+```
 
 ## Functions
 
