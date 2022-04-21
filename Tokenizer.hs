@@ -24,9 +24,6 @@ instance Semigroup (Token a) where
   Group xs <> x         = Group $ xs ++ [x]
   x        <> y         = Group [x, y]
 
-instance Monoid (Token a) where 
-  mempty = Empty 
-
 instance Functor Token where
   fmap _ Empty = Empty
   fmap f (Only a) = Only (f a)

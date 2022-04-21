@@ -15,7 +15,7 @@ test_tokenizer_dump = do
   assertEqual "(foo (bar baz))" $ dump
       (Group [Only "foo", Group [Only "bar", Only "baz"]])
 
-test_tokenizer_monoid = do
+test_tokenizer_semigroup = do
   assertEqual Empty $ Empty <> (Empty :: Token String)
   assertEqual (Only "foo") $ Empty <> Only "foo"
   assertEqual (Only "foo") $ Only "foo" <> Empty
