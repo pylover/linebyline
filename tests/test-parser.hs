@@ -15,5 +15,7 @@ test_dump = do
     $ dump (Infix (Literal "foo") "+" (Literal "bar"))
 
 -- test_parse = do
---   assertEqual (Func "print" "foo" :| []) 
---     $ parse <$> (tokenize "" "print foo") 
+--   assertEqual (Func "print" [Literal "foo"])
+--     $ parse (tokenize "" "print foo") 
+
+-- 2 + 3 + 4 + 5

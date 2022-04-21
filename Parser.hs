@@ -19,11 +19,16 @@ instance Dumper Exp where
 functions :: [String]
 functions = ["print"]
 
-parse :: Token String -> Token Exp
-parse Empty = Empty
-parse (Only a)
-  | a `elem` functions = Only $ Func a []
-  | otherwise = Only $ Literal a
+-- parse :: [String] -> Exp
+-- parse Empty = Empty
+-- parse (Only a)
+--   | a `elem` functions = Only $ Func a []
+--   | otherwise = Only $ Literal a
+-- parse (Group (a:(Only b):c:xs)) 
+--   | op `elem` functions = Infix (parse a) op (parse c) 
+--   | otherwise = parse $ Group (a:(Only b):c:xs) 
+
+
 -- tree :: [String] -> Exp
 -- tree a:b:xs
 --   | a `elem` functions = Func a (eatArgs b:xs)
