@@ -2,56 +2,25 @@
 
 import Test.Framework
 
-import HackLine.Helpers
 import HackLine.Tokenizer
 
 main = htfMain htf_thisModulesTests
 
-test_tokenizer_dump = do
-  assertEqual "" $ dump (Empty :: Token String)
-  assertEqual "foo" $ dump (Only "foo")
-  assertEqual "(foo)" $ dump (Group [Only "foo"])
-  assertEqual "(foo bar)" $ dump (Group [Only "foo", Only "bar"])
-  assertEqual "(foo (bar baz))" $ dump
-      (Group [Only "foo", Group [Only "bar", Only "baz"]])
-
-test_tokenizer_semigroup = do
-  assertEqual Empty $ Empty <> (Empty :: Token String)
-  assertEqual (Only "foo") $ Empty <> Only "foo"
-  assertEqual (Only "foo") $ Only "foo" <> Empty
-
-  assertEqual (Group [Only "foo", Only "bar", Only "baz"])
-    $ Only "foo" <> Group [Only "bar", Only "baz"]
-
-  assertEqual (Group [Only "bar", Only "baz", Only "foo"]) 
-    $ Group [Only "bar", Only "baz"] <> Only "foo"
-
-  assertEqual (Group [Only "foo", Only "bar", Only "baz"]) 
-    $ Group [Only "foo"] <> Group [Only "bar", Only "baz"]
+test_tokenize_ = do
+  assertEqual ["foo"] $ tokenize_ "foo" ""
   
-  assertEqual (Group [Only "foo", Only "bar"]) 
-    $ (Only "foo") <> (Only "bar")
- 
-test_tokenizer_functor = do
-  assertEqual (length <$> (Group [Only "foo", Only "quxx"])) 
-    $ Group [Only 3, Only 4]
+test_tokenize = do
+  assertEqual [] $ tokenize ""
+  assertEqual ["foo", "bar"] $ tokenize "foo bar"
+  assertEqual ["foo", "(", "bar", ")"] $ tokenize "foo (bar)"
+  assertEqual ["foo", "(", "bar", "(", "baz", ")", ")"] 
+    $ tokenize "foo (bar (baz))"
 
-  assertEqual (length <$> (Group [] :: Token String)) (Group [] :: Token Int)
+  assertEqual ["foo", ">>", "bar"] $ tokenize "foo >> bar"
+  assertEqual ["foo", ">>", "bar"] $ tokenize "foo>>bar"
 
-test_tokenizer = do
-  assertEqual ((dump.tokenize "") " Foo Bar Baz ") "(Foo Bar Baz)"
+  assertEqual ["foo", ">>=", "bar"] $ tokenize "foo >>= bar"
+  assertEqual ["foo", ">>=", "bar"] $ tokenize "foo>>=bar"
 
-  assertEqual (tokenize "" " Foo Bar Baz ") 
-    $ Group [Only "Foo", Only "Bar", Only "Baz"]
-
-  assertEqual (Group [Only "Foo", Group [Only "Bar", Only "Baz"]]) $
-    tokenize "" "Foo (Bar Baz)"
-     
-  assertEqual (Group [Only "Foo", 
-                      Group [Only "Bar", Group [Only "Baz,", Only "qux"]]]) $
-    tokenize "" "Foo (Bar (Baz, qux))"
-  
-  assertEqual (Only "2+3") $ tokenize "" "2+3"
-
-  assertEqual (Group [Only "2", Only "+", Only "3"]) 
-    $ tokenize "" "2 + 3"
+  assertEqual ["foo", ">>+", "bar"] $ tokenize "foo >>+ bar"
+  assertEqual ["foo", ">>+", "bar"] $ tokenize "foo>>+bar"

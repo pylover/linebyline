@@ -9,8 +9,5 @@ mPar 0 left (')':xs) = (left, xs)
 mPar i left (')':xs) = mPar (i - 1) (left ++ ")") xs
 mPar i left (x:xs) = mPar i (left ++ [x]) xs
 
-class Dumper a where
-  dump :: a -> String
-
 spacer :: [String] -> String
 spacer xs = intercalate " " xs
