@@ -1,10 +1,6 @@
-{-# LANGUAGE InstanceSigs #-}
 module HackLine.Tokenizer where
 
-(+?) :: String -> [String] -> [String]
-(+?) "" xs = xs
-(+?) a xs = a : xs
-
+import HackLine.Helpers
 
 tokenize_ :: String -> String -> [String]
 tokenize_ c "" = c +? []
