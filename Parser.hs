@@ -6,37 +6,34 @@ import HackLine.Tokenizer
 import HackLine.Helpers
 
 data Exp
-  = Literal String
+  = Void
+  | Literal String
   | Func String [Exp]
   | Infix Exp String Exp
+  | Eval [Exp]
   deriving (Eq, Show)
 
 instance Dumper Exp where
   dump (Literal x) = x
-  dump (Func x xs) = x ++ " " ++ intercalate " " (dump <$> xs)
-  dump (Infix a x b) = dump a ++ " " ++ x ++ " " ++ dump b
+  dump (Func x xs) = "(" ++ x ++ " " ++ intercalate " " (dump <$> xs) ++ ")"
+  dump (Infix a x b) = "(" ++ dump a ++ " " ++ x ++ " " ++ dump b ++ ")"
 
 functions :: [String]
-functions = ["print"]
+functions = 
+  [ "print"
+  , "+"
+  , "-"
+  ]
 
--- parse :: [String] -> Exp
--- parse Empty = Empty
--- parse (Only a)
---   | a `elem` functions = Only $ Func a []
---   | otherwise = Only $ Literal a
--- parse (Group (a:(Only b):c:xs)) 
---   | op `elem` functions = Infix (parse a) op (parse c) 
---   | otherwise = parse $ Group (a:(Only b):c:xs) 
-
-
--- tree :: [String] -> Exp
--- tree a:b:xs
---   | a `elem` functions = Func a (eatArgs b:xs)
---   | b `elem` infixes = Infix (tree a) b (tree xs)
---  
--- eatArgs :: [String] -> [Exp]
--- eatArgs ('(':xs) = tree 
--- eatArgs (x:xs) = tree [x] : eatArgs xs
--- 
--- parse :: String -> Exp
--- parse x = tree $ words x
+parse :: Token String -> Exp
+parse Empty = Void
+parse (Only a)
+  | a `elem` functions = Func a []
+  | otherwise = Literal a
+parse (Group [(Only a), (Only b), c]) 
+  | b `elem` functions = Infix (parse (Only a)) b (parse c) 
+  | a `elem` functions = Func a [parse (Only b), parse c]
+  | otherwise = Eval $ parse <$> [Only a, Only b, c]
+parse (Group ((Only x):xs)) 
+  | x `elem` functions = Func x $ parse <$> xs
+  | otherwise =  Eval $ parse <$> ((Only x) : xs) 

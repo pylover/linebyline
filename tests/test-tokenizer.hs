@@ -50,3 +50,9 @@ test_tokenizer = do
   assertEqual (Group [Only "Foo", 
                       Group [Only "Bar", Group [Only "Baz,", Only "qux"]]]) $
     tokenize "" "Foo (Bar (Baz, qux))"
+  
+  assertEqual (Group [Only "2", Only "+", Only "3"]) 
+    $ tokenize "" "2+3"
+
+  assertEqual (Group [Only "2", Only "+", Only "3"]) 
+    $ tokenize "" "2 + 3"
