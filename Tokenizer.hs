@@ -29,12 +29,6 @@ instance Functor Token where
   fmap f (Only a) = Only (f a)
   fmap f (Group xs) = Group ((fmap.fmap) f xs)
 
-operators :: [String]
-operators = 
-  [ "+"
-  , "-"
-  ]
-
 tokenize :: String -> String -> Token String
 tokenize "" "" = Empty
 tokenize "" (' ':xs) = tokenize "" xs
@@ -43,9 +37,4 @@ tokenize cur (' ':xs) = Only cur <> tokenize "" xs
 tokenize cur ('(':xs) = 
   let (xp, ps) = mPar 0 "" xs
   in tokenize cur "" <> Group [tokenize "" xp] <> tokenize "" ps
-tokenize cur (x:xs)
-  | [x] `elem` operators =
-      case cur of 
-        "" -> Only [x] <> tokenize "" xs
-        _ -> Only cur <> Only [x] <> tokenize "" xs
-  | otherwise = tokenize (cur ++ [x]) xs
+tokenize cur (x:xs) = tokenize (cur ++ [x]) xs
