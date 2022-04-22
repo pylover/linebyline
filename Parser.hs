@@ -21,8 +21,11 @@ instance Dumper Exp where
 functions :: [String]
 functions = 
   [ "print"
-  , "+"
-  , "-"
+  ]
+
+infixes :: [String]
+infixes = 
+  [ "+"
   ]
 
 parse :: Token String -> Exp
@@ -31,7 +34,7 @@ parse (Only a)
   | a `elem` functions = Func a []
   | otherwise = Literal a
 parse (Group [(Only a), (Only b), c]) 
-  | b `elem` functions = Infix (parse (Only a)) b (parse c) 
+  | b `elem` infixes = Infix (parse (Only a)) b (parse c) 
   | a `elem` functions = Func a [parse (Only b), parse c]
   | otherwise = Eval $ parse <$> [Only a, Only b, c]
 parse (Group ((Only x):xs)) 
