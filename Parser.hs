@@ -4,6 +4,7 @@ import Data.List
 
 import HackLine.Tokenizer
 import HackLine.Helpers
+import HackLine.Functions
 
 data Exp
   = Void
@@ -16,18 +17,15 @@ instance Dumper Exp where
   dump (Literal x) = x
   dump (Func x xs) = "(" ++ x ++ " " ++ intercalate " " (dump <$> xs) ++ ")"
 
-functions :: [String]
-functions = 
-  [ "eval"
-  , "print"
-  ]
-
-parse :: Token String -> Exp
-parse Empty = Void
-parse (Only a)
+parseToken :: Token String -> Exp
+parseToken Empty = Void
+parseToken (Only a)
   | a `elem` functions = Func a []
   | otherwise = Literal a
-parse (Group ((Only x):xs)) 
-  | x `elem` functions = Func x $ parse <$> xs
-  | otherwise =  Func "eval" $ parse <$> ((Only x) : xs) 
-parse (Group xs) = Func "eval" $ parse <$> xs
+parseToken (Group ((Only x):xs)) 
+  | x `elem` functions = Func x $ parseToken <$> xs
+  | otherwise =  Func "print" $ parseToken <$> ((Only x) : xs) 
+parseToken (Group xs) = Func "print" $ parseToken <$> xs
+
+parse :: String -> Exp
+parse s = parseToken $ tokenize "" s

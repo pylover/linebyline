@@ -12,22 +12,20 @@ test_dump = do
   assertEqual "(print foo bar)"
     $ dump (Func "print" [Literal "foo", Literal "bar"])
 
+  assertEqual "(print foo)"
+    $ dump (parse "print foo")
+
 test_parse = do
   assertEqual (Func "print" [Literal "foo"])
-    $ parse (tokenize "" "print foo") 
-
-  assertEqual "(print foo)"
-    $ dump (parse (tokenize "" "print foo"))
+    $ parse "print foo"
 
   assertEqual (Func "print" [Literal "foo", Literal "2+3"])
-    $ parse (tokenize "" "print foo 2+3")
+    $ parse "print foo 2+3"
 
   assertEqual (Func "print" [Literal "foo", Literal "2+3"])
-    $ parse (tokenize "" "print foo (2+3)")
+    $ parse "print foo (2+3)"
 
   assertEqual (Func "print" 
       [ Literal "foo"
-      , Func "eval" [Literal "2", Literal "+", Literal "3"]])
-    $ parse (tokenize "" "print foo (2 + 3)")
-
--- 2 + 3 + 4 + 5
+      , Func "print" [Literal "2", Literal "+", Literal "3"]])
+    $ parse "print foo (2 + 3)"

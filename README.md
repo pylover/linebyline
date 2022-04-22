@@ -28,6 +28,10 @@ a >> b: (line -> a -> print out) then (line -> b -> print out)
 a >>= b: line -> a -> b -> print out
 ```
 
+```
+a >>+ b x y: line -> a -> out, x, y -> b -> print out
+```
+
 ## Functions
 
 - `split :: str -> [str] -> [str]`
@@ -36,3 +40,7 @@ a >>= b: line -> a -> b -> print out
 - `omit ::  omit current line`
 - `print :: [str] -> [str]`
 
+## Special variables
+
+- `$line`
+- `$lineno`
