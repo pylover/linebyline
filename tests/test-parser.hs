@@ -15,16 +15,16 @@ test_parse = do
   assertEqual (Group [Literal "foo", Literal "bar", Literal "baz"]) 
     $ parse "foo (bar baz)"
 
-  assertEqual (Pipe (Literal "foo") ">>|" (Literal "bar")) 
-    $ parse "foo >>| bar"
+  assertEqual (Pipe (Literal "foo") ">>" (Literal "bar")) 
+    $ parse "foo >> bar"
 
-  assertEqual (Pipe (Literal "foo") ">>|" 
-              (Pipe (Literal "bar") ">>+" (Literal "baz"))) 
-    $ parse "foo >>| bar >>+ baz"
+  assertEqual (Pipe (Literal "foo") ">>" 
+              (Pipe (Literal "bar") ">>" (Literal "baz"))) 
+    $ parse "foo >> bar >> baz"
 
-  assertEqual (Pipe (Group [Literal "foo", Literal "bar"]) ">>|" 
-              (Pipe (Literal "bar") ">>+" (Literal "baz"))) 
-    $ parse "(foo bar) >>| bar >>+ baz"
+  assertEqual (Pipe (Group [Literal "foo", Literal "bar"]) ">>" 
+              (Pipe (Literal "bar") ">>" (Literal "baz"))) 
+    $ parse "(foo bar) >> bar >> baz"
   
   assertEqual (Func "join" [Literal "bar", Literal "baz"]) 
     $ parse "join bar baz"

@@ -42,7 +42,7 @@ parse_ [] = Void
 parse_ ("(":xs) = parse_ xp <> parse_ ps
   where (xp, ps) = splitByParenthesis xs
 parse_ (('$':v):xs) = Var v <> parse_ xs
-parse_ (['>', '>', x]:xs) = Pipe Void ['>', '>', x] (parse_ xs)
+parse_ (">>":xs) = Pipe Void ">>" (parse_ xs)
 parse_ (x:xs) 
   | x `elem` functions = Func x [] <> parse_ xs
   | otherwise = Literal x <> parse_ xs
