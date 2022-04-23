@@ -2,11 +2,14 @@ module HackLine.Evaluator where
 
 import HackLine.Helpers
 import HackLine.Tokenizer
+import HackLine.Parser
 
-data Session = Session { index :: Int, args :: [String] }
+data Ctx = Ctx { index :: Int, args :: [String] }
 
-evaluate :: [String] -> Session -> [String]
-evaluate (x:xs) s = x : xs
+evaluate :: Ctx -> [String] -> Exp -> [String]
+evaluate _ _ (Literal a) = [a]
+evaluate c a (Group xs) = mconcat $ evaluate c a <$> xs
+-- evaluate (Literal a) ctx xs = [a]
 
 eval :: String -> String -> String 
-eval e i = spacer $  evaluate (tokenize e) (Session 0 [i])
+eval e i = spacer $ evaluate (Ctx 0 [i]) [i] (parse e)
