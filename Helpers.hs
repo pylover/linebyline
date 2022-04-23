@@ -19,4 +19,8 @@ spacer xs = intercalate " " xs
 (+?) "" xs = xs
 (+?) a xs = a : xs
 
+quote :: String -> String
+quote = decorate '\''
 
+decorate :: Char -> String -> String
+decorate c s  = c : s ++ [c]

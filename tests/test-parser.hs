@@ -43,3 +43,6 @@ test_parse = do
 
   assertEqual (Func "join" [Var "1", Var "bar", Var "2", Literal "foo"]) 
     $ parse "join $1 $bar $2 foo"
+  
+  assertEqual (Literal "join foo bar") 
+    $ parse "'join foo bar'"
