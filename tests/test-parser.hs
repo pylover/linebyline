@@ -34,3 +34,9 @@ test_parse = do
       Literal "baz", 
       Func "split" [Literal "foo", Literal "qux"]]) 
     $ parse "join bar baz (split foo qux)"
+  
+  assertEqual (Group [Var "foo", Var "bar"]) 
+    $ parse "$foo $bar"
+
+  assertEqual (Group [Var "1", Var "2"]) 
+    $ parse "$1 $2"
