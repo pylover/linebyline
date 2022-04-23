@@ -41,5 +41,5 @@ test_parse = do
   assertEqual (Group [Var "1", Var "2"]) 
     $ parse "$1 $2"
 
-  assertEqual (Func "join" [Var "1", Var "2", Var "bar", Var "3"]) 
-    $ parse "join $1 $2 $bar $3"
+  assertEqual (Func "join" [Var "1", Var "bar", Var "2", Literal "foo"]) 
+    $ parse "join $1 $bar $2 foo"
