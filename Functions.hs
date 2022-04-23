@@ -6,7 +6,8 @@ type Function = Session -> [String] -> [String]
 
 functions :: [String]
 functions = 
-  ["print"
+  [ "join"
+  , "split"
   ]
 
 getFunc :: String -> Function

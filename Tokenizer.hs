@@ -12,4 +12,3 @@ tokenize_ c (x:xs)
 
 tokenize :: String -> [String]
 tokenize = tokenize_ ""
-
