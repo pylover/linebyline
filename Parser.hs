@@ -20,12 +20,12 @@ instance Semigroup Exp where
   a <> Void = a
   Void <> a = a
 
-  a <> (Group xs) = Group $ a : xs
-  (Group xs) <> a = Group $ xs ++ [a]
-  
   a <> (Pipe Void p e) = Pipe a p e
   (Pipe e p Void) <> a = Pipe e p a
 
+  a <> (Group xs) = Group $ a : xs
+  (Group xs) <> a = Group $ xs ++ [a]
+  
   a <> b = Group [a, b]
 
 
@@ -35,7 +35,7 @@ instance Monoid Exp where
 
 parse_ :: [String] -> Exp
 parse_ [] = Void
-parse_ ("(":xs) = Group [parse_ xp] <> parse_ ps
+parse_ ("(":xs) = parse_ xp <> parse_ ps
   where (xp, ps) = splitByParenthesis xs
 parse_ (['>', '>', x]:xs) = Pipe Void ['>', '>', x] (parse_ xs)
 parse_ (x:xs) = Literal x <> parse_ xs
