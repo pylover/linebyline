@@ -16,8 +16,8 @@ test_tokenize = do
   assertEqual ["foo", "(", "bar", "(", "baz", ")", ")"] 
     $ tokenize "foo (bar (baz))"
 
-  assertEqual ["foo", ">>", "bar"] $ tokenize "foo >> bar"
-  assertEqual ["foo", ">>", "bar"] $ tokenize "foo>>bar"
+  assertEqual ["foo", ">>|", "bar"] $ tokenize "foo >>| bar"
+  assertEqual ["foo", ">>|", "bar"] $ tokenize "foo>>|bar"
 
   assertEqual ["foo", ">>=", "bar"] $ tokenize "foo >>= bar"
   assertEqual ["foo", ">>=", "bar"] $ tokenize "foo>>=bar"

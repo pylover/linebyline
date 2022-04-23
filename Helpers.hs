@@ -2,13 +2,16 @@ module HackLine.Helpers where
 
 import Data.List
 
---mPar :: Int -> String -> String -> (String, String)
---mPar _ left "" = (left, [])
---mPar i left ('(':xs) = mPar (i + 1) (left ++ "(") xs
---mPar 0 left (')':xs) = (left, xs)
---mPar i left (')':xs) = mPar (i - 1) (left ++ ")") xs
---mPar i left (x:xs) = mPar i (left ++ [x]) xs
---
+splitPar :: Int -> [String] -> [String] -> ([String], [String])
+splitPar _ left [] = (left, [])
+splitPar i left ("(":xs) = splitPar (i + 1) (left ++ ["("]) xs
+splitPar 0 left (")":xs) = (left, xs)
+splitPar i left (")":xs) = splitPar (i - 1) (left ++ [")"]) xs
+splitPar i left (x:xs) = splitPar i (left ++ [x]) xs
+
+splitByParenthesis :: [String] -> ([String], [String])
+splitByParenthesis = splitPar 0 []
+
 spacer :: [String] -> String
 spacer xs = intercalate " " xs
 
