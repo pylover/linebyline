@@ -37,16 +37,23 @@ instance Monoid Exp where
   mempty = Void
 
 
-parse_ :: [String] -> Exp
-parse_ [] = Void
-parse_ ("(":xs) = parse_ xp <> parse_ ps
+eat :: [String] -> (Exp, [String])
+eat [] = (mempty, [])
+eat ("(":xs) = (parse_ xp, ps)
   where (xp, ps) = splitByParenthesis xs
-parse_ (('$':v):xs) = Var v <> parse_ xs
-parse_ (">>":xs) = Pipe Void ">>" (parse_ xs)
-parse_ (('\'':v):xs) = Literal (init v) <> parse_ xs
-parse_ (x:xs) 
-  | x `elem` functions = Func x [] <> parse_ xs
-  | otherwise = Literal x <> parse_ xs
+eat (('$':v):xs) = (Var v, xs)
+eat (">>":xs) = (Pipe Void ">>" Void, xs)
+eat (('\'':v):xs) = (Literal (init v), xs)
+eat (x:xs) 
+  | x `elem` functions = (Func x [], xs)
+  | otherwise = (Literal x, xs)
+
+
+parse_ :: [String] -> Exp
+parse_ [] = mempty
+parse_ xs = exp <> parse_ rs
+  where (exp, rs) = eat xs
+
 
 parse :: String -> Exp
 parse = parse_.tokenize
