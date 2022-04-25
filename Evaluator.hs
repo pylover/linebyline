@@ -1,5 +1,6 @@
 module HackLine.Evaluator where
 
+import Text.Read
 
 import HackLine.Helpers
 import HackLine.Context
@@ -12,11 +13,16 @@ evalFunc :: Ctx -> String -> [String] -> [String]
 evalFunc c n a = (getFunc n) c a 
 
 getArg :: Ctx -> Int -> String
-getArg (Ctx _ xs) i = xs !! i
+getArg (Ctx _ xs) i 
+  | i < l = xs !! i
+  | otherwise = ""
+  where l = length xs
 
 evalVar :: Ctx -> String -> String
 evalVar (Ctx i _) "n" = show i
-evalVar c n = getArg c (read n)
+evalVar c n = case readMaybe n of
+  Just a -> getArg c a
+  Nothing -> ""
 
 evaluate :: Ctx -> Exp -> [String]
 evaluate _ (Literal a) = [a]
