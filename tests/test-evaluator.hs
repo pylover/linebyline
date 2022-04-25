@@ -10,12 +10,17 @@ import HackLine.Evaluator
 main = htfMain htf_thisModulesTests
 
 
-test_evaluate = do
+test_evaluate_literal = do
   assertEqual ["foo bar baz"] 
     $ evaluate (Ctx 0 []) (parse "join ' ' foo bar baz")
 
   assertEqual ["foo,bar,baz"] 
     $ evaluate (Ctx 0 []) (parse "join , foo bar baz")
+
+
+test_evaluate_var = do
+  assertEqual ["foo", "bar", "baz"] 
+    $ evaluate (Ctx 0 ["foo", "bar"]) (parse "$0 $1 baz")
 
 
 test_eval = do
