@@ -12,17 +12,20 @@ import HackLine.Functions
 evalFunc :: Ctx -> String -> [String] -> [String]
 evalFunc c n a = (getFunc n) c a 
 
+
 getArg :: Ctx -> Int -> String
 getArg (Ctx _ xs) i 
   | i < l = xs !! i
   | otherwise = "$" ++ show i
   where l = length xs
 
+
 evalVar :: Ctx -> String -> String
 evalVar (Ctx i _) "n" = show i
 evalVar c n = case readMaybe n of
   Just a -> getArg c a
   Nothing -> "$" ++ n
+
 
 evaluate :: Ctx -> Exp -> [String]
 evaluate _ (Literal a) = [a]
