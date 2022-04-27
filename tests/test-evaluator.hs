@@ -36,4 +36,5 @@ test_eval = do
   assertEqual "foo" $ eval "foo" ""
   assertEqual "foo bar baz" $ eval "foo bar baz" ""
   assertEqual "join bar baz" $ eval "'join' bar baz" ""
+  assertEqual "foo bar baz qux" $ eval "split ' ' $0 baz qux" "foo bar"
   
