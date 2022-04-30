@@ -18,9 +18,11 @@ cabal-version:       >=1.10
 
 executable hackline
   main-is:             Main.hs
-  -- other-modules:
+  other-modules:       Paths_hackline
+                     , CLI
   -- other-extensions:
   build-depends:       base >=4.12 && <4.13
+                     , optparse-applicative
   -- hs-source-dirs:
   default-language:    Haskell2010
 

@@ -1,4 +1,12 @@
 module Main where
 
+
+import HackLine.CLI
+
+
 main :: IO ()
-main = putStrLn "Hello, Haskell!"
+main = parseArgs >>= greet 
+
+
+greet :: Args -> IO ()
+greet (Args script) = putStrLn script

@@ -1,12 +1,13 @@
 HACKAGE = hackline
 
-.PHONY: run
-run:
-	cabal v2-run $(HACKAGE)
 
 .PHONY: build
 build:
-	cabal v2-build
+	cabal v2-build hackline
+
+.PHONY: run
+run:
+	cabal v2-run $(HACKAGE)
 
 .PHONY: configure
 configure:
