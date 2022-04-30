@@ -14,5 +14,6 @@ tokenize_ c (x:xs)
   | x `elem` "()" = c +? ([x] : tokenize_ "" xs)
   | otherwise = tokenize_ (c ++ [x]) xs
 
+
 tokenize :: String -> [String]
 tokenize = tokenize_ ""
