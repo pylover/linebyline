@@ -1,5 +1,6 @@
 module HackLine.Evaluator where
 
+
 import Text.Read
 
 import HackLine.Helpers
@@ -10,7 +11,7 @@ import HackLine.Functions
 
 
 evalFunc :: Ctx -> String -> [String] -> [String]
-evalFunc c n a = (getFunc n) c a 
+evalFunc c n a = (getFunc n) c a
 
 
 getArg :: Ctx -> Int -> String
@@ -30,10 +31,11 @@ evalVar c n = case readMaybe n of
 evaluate :: Ctx -> Exp -> [String]
 evaluate _ (Literal a) = [a]
 evaluate c (Var a) = [evalVar c a]
-evaluate c (Group xs) = mconcat $ evaluate c <$> xs
-evaluate (Ctx i ca) (Func f []) = evalFunc (Ctx i ca) f ca
-evaluate c (Func f xs) = evalFunc c f $ evaluate c (Group xs)
-
+evaluate c (Group xs) = (spacer . evaluate c) <$> xs
+evaluate c (Func f xs) = evalFunc c f aa
+  where aa = evaluate c (Group xs)
+evaluate (Ctx i ca) (Pipe a b) = evaluate (Ctx i na) b
+  where na = evaluate (Ctx i ca) a
 
 eval :: String -> String -> String 
 eval e i = spacer $ evaluate (Ctx 0 [i]) (parse e)

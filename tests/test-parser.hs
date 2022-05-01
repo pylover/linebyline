@@ -20,12 +20,16 @@ test_parse_pipe = do
   assertEqual (Pipe (Literal "foo") (Literal "bar")) 
     $ parse "foo :: bar"
 
-  assertEqual (Pipe (Literal "foo") 
-              (Pipe (Literal "bar") (Literal "baz"))) 
+  assertEqual (Pipe (Group [Literal "foo", Literal "bar"]) (Literal "baz")) 
+    $ parse "foo bar :: baz"
+  
+  assertEqual (Pipe (Pipe (Literal "foo") (Literal "bar")) (Literal "baz"))
     $ parse "foo :: bar :: baz"
 
-  assertEqual (Pipe (Group [Literal "foo", Literal "bar"]) 
-              (Pipe (Literal "bar") (Literal "baz"))) 
+
+  assertEqual (Pipe (
+        Pipe (Group [Literal "foo", Literal "bar"]) (Literal "bar"))
+       (Literal "baz"))
     $ parse "(foo bar) :: bar :: baz"
  
 

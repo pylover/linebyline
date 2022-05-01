@@ -23,9 +23,18 @@ getFunc "split" = splitF
 getFunc "" = joinF
 
 
+funcArgs :: [String] -> [String] -> [String]
+funcArgs ca [] = ca
+funcArgs _ xs = xs
+
+
 joinF :: Ctx -> [String] -> [String]
-joinF c (x:xs) = [intercalate x xs]
+joinF c [] = joinF c [" "]
+joinF (Ctx _ ca) (x:xs) = [intercalate x a]
+  where a = funcArgs ca xs
 
 
 splitF :: Ctx -> [String] -> [String]
-splitF c (s:xs) = [spacer $ split "" s (spacer xs)]
+splitF c [] = splitF c [" "]
+splitF (Ctx _ ca) (x:xs) = split "" x a
+  where a = spacer $ funcArgs ca xs

@@ -1,6 +1,6 @@
 module HackLine.Parser where
 
-import Data.Foldable
+import Data.List
 
 import HackLine.Helpers
 import HackLine.Functions
@@ -21,8 +21,8 @@ instance Semigroup Exp where
   a <> Void = a
   Void <> a = a
 
-  a <> (Pipe Void e) = Pipe a e
-  (Pipe e Void) <> a = Pipe e a
+  a <> (Pipe as e) = Pipe (a <> as) e
+  (Pipe e as) <> a = Pipe e (as <> a)
 
   (Func x xs) <> (Group gs) = Func x (xs ++ gs)
   (Func x xs) <> a = Func x (xs ++ [a])
