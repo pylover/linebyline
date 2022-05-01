@@ -19,7 +19,7 @@ test:
 
 .PHONY: install
 install:
-	-rm -f ~/.cabal/bin/$(HACKAGE)
+	-rm $(HOME)/.cabal/bin/$(HACKAGE)
 	cabal v2-install $(HACKAGE)
 
 .PHONY: clean

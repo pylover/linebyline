@@ -20,7 +20,7 @@ versionParser = infoOption (showVersion version)
 
 parser :: Parser Args
 parser = Args
-  <$> some ( strArgument (
+  <$> many ( strArgument (
      ( metavar "SCRIPT..."
     <> help "Hackline script to execute line-by-line on input." )))
   -- <*> switch

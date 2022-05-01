@@ -43,6 +43,8 @@ test_evaluate_var = do
 
 
 test_eval = do
+  assertEqual "" $ ev "" ""
+  assertEqual "Foo Bar" $ ev "" "Foo Bar"
   assertEqual "foo" $ ev "foo" ""
   assertEqual "foo bar baz" $ ev "foo bar baz" ""
   assertEqual "join bar baz" $ ev "'join' bar baz" ""

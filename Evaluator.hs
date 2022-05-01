@@ -29,6 +29,7 @@ evalVar c n = case readMaybe n of
 
 
 evaluate :: Ctx -> Exp -> [String]
+evaluate (Ctx _ ca) Void = ca
 evaluate _ (Literal a) = [a]
 evaluate c (Var a) = [evalVar c a]
 evaluate c (Group xs) = (spacer . evaluate c) <$> xs
