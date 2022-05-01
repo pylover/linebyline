@@ -1,4 +1,4 @@
-module HackLine.Evaluator where
+module HackLine.Evaluator (eval, evaluate) where
 
 
 import Text.Read

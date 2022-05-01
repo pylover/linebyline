@@ -2,10 +2,11 @@ module Main where
 
 
 import System.IO
--- import System.Console.Haskeline
+import System.Console.Haskeline
 
 import HackLine.Helpers
 import HackLine.CLI
+import HackLine.Evaluator
 
 
 main :: IO ()
@@ -13,14 +14,13 @@ main = parseArgs >>= greet
 
 
 greet :: Args -> IO ()
-greet (Args s) = putStrLn $ spacer s
+greet (Args a) = runInputT defaultSettings (loop e)
+  where e = eval $ spacer a
 
--- greet _ = runInputT defaultSettings loop
 
-
--- loop :: InputT IO ()
--- loop = do
---   minput <- getInputLine ""
---   case minput of
---     Nothing -> return ()
---     Just input -> outputStrLn input >> loop
+loop :: (String -> String) -> InputT IO ()
+loop e = do
+  minput <- getInputLine ""
+  case minput of
+    Nothing -> return ()
+    Just input -> outputStrLn (e input) >> loop e
