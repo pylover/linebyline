@@ -8,7 +8,7 @@ import Paths_hackline (version)
 
 
 data Args = Args
-  { script :: String
+  { script :: [String]
   }
 
 
@@ -20,10 +20,9 @@ versionParser = infoOption (showVersion version)
 
 parser :: Parser Args
 parser = Args
-  <$> strArgument (
-     ( metavar "SCRIPT"
-    <> value ""
-    <> help "Hackline script to execute line-by-line on input." ))
+  <$> some ( strArgument (
+     ( metavar "SCRIPT..."
+    <> help "Hackline script to execute line-by-line on input." )))
   -- <*> switch
   --    ( long "quiet"
   --   <> short 'q'
@@ -39,8 +38,8 @@ parser = Args
 options :: ParserInfo Args
 options = info (parser <**> versionParser <**> helper)
    ( fullDesc
-  <> progDesc "Print a greeting for TARGET"
-  <> header "hello - a test for optparse-applicative" )
+  <> progDesc "Foo Bar Baz"
+  <> header "Qux" )
 
 
 parseArgs :: IO Args

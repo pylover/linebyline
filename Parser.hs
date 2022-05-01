@@ -13,7 +13,7 @@ data Exp
   | Literal String
   | Group [Exp]
   | Func String [Exp]
-  | Pipe Exp String Exp
+  | Pipe Exp Exp
   deriving (Eq, Show)
 
 
@@ -21,8 +21,8 @@ instance Semigroup Exp where
   a <> Void = a
   Void <> a = a
 
-  a <> (Pipe Void p e) = Pipe a p e
-  (Pipe e p Void) <> a = Pipe e p a
+  a <> (Pipe Void e) = Pipe a e
+  (Pipe e Void) <> a = Pipe e a
 
   (Func x xs) <> (Group gs) = Func x (xs ++ gs)
   (Func x xs) <> a = Func x (xs ++ [a])
@@ -42,7 +42,7 @@ eat [] = (mempty, [])
 eat ("(":xs) = (parse_ xp, ps)
   where (xp, ps) = splitByParenthesis xs
 eat (('$':v):xs) = (Var v, xs)
-eat (">>":xs) = (Pipe Void ">>" Void, xs)
+eat (">>":xs) = (Pipe Void Void, xs)
 eat (('\'':v):xs) = (Literal (init v), xs)
 eat (x:xs) 
   | x `elem` functions = (Func x [], xs)
