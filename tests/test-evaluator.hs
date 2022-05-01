@@ -9,6 +9,7 @@ import HackLine.Evaluator
 
 main = htfMain htf_thisModulesTests
 
+ev e a = eval e 0 a
 
 test_evaluate_literal = do
   assertEqual ["foo bar baz"] 
@@ -42,13 +43,13 @@ test_evaluate_var = do
 
 
 test_eval = do
-  assertEqual "foo" $ eval "foo" ""
-  assertEqual "foo bar baz" $ eval "foo bar baz" ""
-  assertEqual "join bar baz" $ eval "'join' bar baz" ""
-  assertEqual "foo bar baz qux" $ eval "split ' ' :0 baz qux" "foo bar"
+  assertEqual "foo" $ ev "foo" ""
+  assertEqual "foo bar baz" $ ev "foo bar baz" ""
+  assertEqual "join bar baz" $ ev "'join' bar baz" ""
+  assertEqual "foo bar baz qux" $ ev "split ' ' :0 baz qux" "foo bar"
 
 
 test_eval_pipe = do
-  assertEqual "foo|bar" $ eval "split :: join '|'" "foo bar"
-  assertEqual "foo|bar" $ eval "foo bar :: join '|'" ""
-  assertEqual "foo|bar" $ eval "join '|' foo bar" "qux quux"
+  assertEqual "foo|bar" $ ev "split :: join '|'" "foo bar"
+  assertEqual "foo|bar" $ ev "foo bar :: join '|'" ""
+  assertEqual "foo|bar" $ ev "join '|' foo bar" "qux quux"

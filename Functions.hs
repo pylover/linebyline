@@ -36,5 +36,5 @@ joinF (Ctx _ ca) (x:xs) = [intercalate x a]
 
 splitF :: Ctx -> [String] -> [String]
 splitF c [] = splitF c [" "]
-splitF (Ctx _ ca) (x:xs) = split "" x a
+splitF (Ctx _ ca) (x:xs) = split x a
   where a = spacer $ funcArgs ca xs

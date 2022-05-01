@@ -14,13 +14,13 @@ main = parseArgs >>= greet
 
 
 greet :: Args -> IO ()
-greet (Args a) = runInputT defaultSettings (loop e)
-  where e = eval $ spacer a
+greet (Args a) = runInputT defaultSettings (loop e 1)
+  where e = eval (spacer a)
 
 
-loop :: (String -> String) -> InputT IO ()
-loop e = do
+loop :: (Int -> String -> String) -> Int -> InputT IO ()
+loop e i = do
   minput <- getInputLine ""
   case minput of
     Nothing -> return ()
-    Just input -> outputStrLn (e input) >> loop e
+    Just input -> outputStrLn (e i input) >> loop e (i+1)

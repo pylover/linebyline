@@ -1,4 +1,10 @@
-module HackLine.Helpers where
+module HackLine.Helpers 
+  ( split
+  , spacer
+  , quote
+  , (+?)
+  , splitByParenthesis
+  )  where
 
 import Data.List
 import Data.String
@@ -37,8 +43,13 @@ findString :: (Eq a) => [a] -> [a] -> Maybe Int
 findString search str = findIndex (isPrefixOf search) (tails str)
 
 
-split :: String -> String -> String -> [String]
-split c n "" = [c]
-split c n (s:ss)= case stripPrefix n (s:ss) of
-  Just x -> c : split "" n x
-  Nothing -> split (c ++ [s]) n ss
+split_ :: String -> String -> String -> [String]
+split_ c n "" = [c]
+split_ c n (s:ss)= case stripPrefix n (s:ss) of
+  Just x -> c : split_ "" n x
+  Nothing -> split_ (c ++ [s]) n ss
+
+
+split :: String -> String -> [String]
+split s xs = filter (/="") res
+  where res = split_ "" s xs
