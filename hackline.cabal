@@ -66,7 +66,10 @@ Test-Suite test-parser
 Test-Suite test-evaluator
   Type:                exitcode-stdio-1.0
   Main-is:             tests/test-evaluator.hs
-  Build-depends:       base, HTF
+  Build-depends:       base
+                     , HTF
+                     , mtl
+                     , transformers
   other-modules:       Helpers
                      , Context
                      , Tokenizer

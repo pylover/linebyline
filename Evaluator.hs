@@ -1,4 +1,10 @@
-module HackLine.Evaluator (eval, evaluate) where
+module HackLine.Evaluator 
+  (Signal(..)
+   , eval
+   , evaluate
+   , evaluator
+   , Evaluator(..)
+   ) where
 
 
 import Text.Read
@@ -8,6 +14,13 @@ import HackLine.Context
 import HackLine.Tokenizer
 import HackLine.Parser
 import HackLine.Functions
+
+
+data Signal = SuppressLine | SuppressAll
+  deriving (Eq, Show)
+
+
+type Evaluator = Int -> String -> Either Signal String
 
 
 evalFunc :: Ctx -> String -> [String] -> [String]
@@ -39,5 +52,10 @@ evaluate (Ctx i ca) (Pipe a b) = evaluate (Ctx i na) b
   where na = evaluate (Ctx i ca) a
 
 
-eval :: String -> Int -> String -> Maybe String 
-eval e i a = Just $ spacer (evaluate (Ctx i [a]) (parse e))
+eval :: String -> Int -> String -> Either Signal String 
+eval e i a = Right $ spacer (evaluate (Ctx i [a]) (parse e))
+
+
+evaluator :: String -> Evaluator
+evaluator = eval
+

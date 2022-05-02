@@ -7,6 +7,7 @@ module HackLine.Helpers
   , liftMaybe
   , readLine
   , exitError
+  , exit
   )  where
 
 
@@ -78,3 +79,7 @@ readLine = do
 
 exitError :: IO ()
 exitError = exitWith (ExitFailure 84)
+
+
+exit :: IO ()
+exit = exitWith ExitSuccess
