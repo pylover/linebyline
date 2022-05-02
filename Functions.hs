@@ -7,7 +7,11 @@ import HackLine.Context
 import HackLine.Helpers
 
 
-type Function = Ctx -> [String] -> [String]
+data Signal = SuppressLine | SuppressAll
+  deriving (Eq, Show)
+
+
+type Function = Ctx -> [String] -> Either Signal [String]
 
 
 functions :: [String]
@@ -24,17 +28,19 @@ getFunc "" = joinF
 
 
 funcArgs :: [String] -> [String] -> [String]
+-- funcArgs ca xs = ca ++ xs
+-- Uncomment to ignore positional args when context has arguments
 funcArgs ca [] = ca
 funcArgs _ xs = xs
 
 
-joinF :: Ctx -> [String] -> [String]
+joinF :: Ctx -> [String] -> Either Signal [String]
 joinF c [] = joinF c [" "]
-joinF (Ctx _ ca) (x:xs) = [intercalate x a]
+joinF (Ctx _ ca) (x:xs) = Right $ [intercalate x a]
   where a = funcArgs ca xs
 
 
-splitF :: Ctx -> [String] -> [String]
+splitF :: Ctx -> [String] -> Either Signal [String]
 splitF c [] = splitF c [" "]
-splitF (Ctx _ ca) (x:xs) = split x a
+splitF (Ctx _ ca) (x:xs) = Right $ split x a
   where a = spacer $ funcArgs ca xs
