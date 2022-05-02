@@ -1,5 +1,5 @@
 module HackLine.Evaluator 
-  (Signal(..)
+   ( Signal(..)
    , eval
    , evaluate
    , evaluator
@@ -23,8 +23,8 @@ data Signal = SuppressLine | SuppressAll
 type Evaluator = Int -> String -> Either Signal String
 
 
-evalFunc :: Ctx -> String -> [String] -> [String]
-evalFunc c n a = (getFunc n) c a
+evalFunc :: Ctx -> String -> [String] -> Either Signal [String]
+evalFunc c n a = Right $ (getFunc n) c a
 
 
 getArg :: Ctx -> Int -> String
@@ -41,21 +41,26 @@ evalVar c n = case readMaybe n of
   Nothing -> ':' : n
 
 
-evaluate :: Ctx -> Exp -> [String]
-evaluate (Ctx _ ca) Void = ca
-evaluate _ (Literal a) = [a]
-evaluate c (Var a) = [evalVar c a]
-evaluate c (Group xs) = (spacer . evaluate c) <$> xs
-evaluate c (Func f xs) = evalFunc c f aa
-  where aa = evaluate c (Group xs)
-evaluate (Ctx i ca) (Pipe a b) = evaluate (Ctx i na) b
-  where na = evaluate (Ctx i ca) a
+evalGroup :: Ctx -> [Exp] -> [String] -> Either Signal [String]
+evalGroup c [] r = Right r
+evalGroup c (x:xs) r = case evaluate c x of
+  Right rs -> evalGroup c xs (r ++ [spacer rs])
+  ls -> ls
+
+
+evaluate :: Ctx -> Exp -> Either Signal [String]
+evaluate (Ctx _ ca) Void = Right ca
+evaluate _ (Literal a) = Right [a]
+evaluate c (Var a) = Right [evalVar c a]
+evaluate c (Group xs) = evalGroup c xs []
+evaluate c (Func f xs) = evaluate c (Group xs) >>= evalFunc c f
+evaluate (Ctx i ca) (Pipe a b) = evaluate (Ctx i ca) a >>= nb
+  where nb x = evaluate (Ctx i x) b
 
 
 eval :: String -> Int -> String -> Either Signal String 
-eval e i a = Right $ spacer (evaluate (Ctx i [a]) (parse e))
+eval e i a = evaluate (Ctx i [a]) (parse e) >>= Right . spacer
 
 
 evaluator :: String -> Evaluator
 evaluator = eval
-

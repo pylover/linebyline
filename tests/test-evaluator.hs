@@ -12,33 +12,33 @@ main = htfMain htf_thisModulesTests
 ev e a = eval e 0 a
 
 test_evaluate_literal = do
-  assertEqual ["foo bar baz"] 
+  assertEqual (Right ["foo bar baz"])
     $ evaluate (Ctx 0 []) (parse "join ' ' foo bar baz")
 
-  assertEqual ["foo,bar,baz"] 
+  assertEqual (Right ["foo,bar,baz"])
     $ evaluate (Ctx 0 []) (parse "join ',' foo bar baz")
 
-  assertEqual ["foo,bar,baz"] 
+  assertEqual (Right ["foo,bar,baz"]) 
     $ evaluate (Ctx 0 []) (parse "join , foo bar baz")
 
-  assertEqual ["foo::bar::baz"] 
+  assertEqual (Right ["foo::bar::baz"]) 
     $ evaluate (Ctx 0 []) (parse "join '::' foo bar baz")
 
-  assertEqual ["foo:bar:baz"] 
+  assertEqual (Right ["foo:bar:baz"]) 
     $ evaluate (Ctx 0 []) (parse "join : foo bar baz")
 
 
 test_evaluate_var = do
-  assertEqual ["foo", "bar", "baz"] 
+  assertEqual (Right ["foo", "bar", "baz"]) 
     $ evaluate (Ctx 0 ["foo", "bar"]) (parse ":0 :1 baz")
 
-  assertEqual ["foo", "bar", ":2"] 
+  assertEqual (Right ["foo", "bar", ":2"]) 
     $ evaluate (Ctx 0 ["foo", "bar"]) (parse ":0 :1 :2")
 
-  assertEqual ["foo", "bar", ":2"] 
+  assertEqual (Right ["foo", "bar", ":2"]) 
     $ evaluate (Ctx 0 ["foo", "bar"]) (parse ":0 :1 :2")
 
-  assertEqual ["foo", "bar", ":baz"] 
+  assertEqual (Right ["foo", "bar", ":baz"]) 
     $ evaluate (Ctx 0 ["foo", "bar"]) (parse ":0 :1 :baz")
 
 
