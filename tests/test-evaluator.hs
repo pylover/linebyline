@@ -43,15 +43,15 @@ test_evaluate_var = do
 
 
 test_eval = do
-  assertEqual "" $ ev "" ""
-  assertEqual "Foo Bar" $ ev "" "Foo Bar"
-  assertEqual "foo" $ ev "foo" ""
-  assertEqual "foo bar baz" $ ev "foo bar baz" ""
-  assertEqual "join bar baz" $ ev "'join' bar baz" ""
-  assertEqual "foo bar baz qux" $ ev "split ' ' :0 baz qux" "foo bar"
+  assertEqual (Just "") $ ev "" ""
+  assertEqual (Just "Foo Bar") $ ev "" "Foo Bar"
+  assertEqual (Just "foo") $ ev "foo" ""
+  assertEqual (Just "foo bar baz") $ ev "foo bar baz" ""
+  assertEqual (Just "join bar baz") $ ev "'join' bar baz" ""
+  assertEqual (Just "foo bar baz qux") $ ev "split ' ' :0 baz qux" "foo bar"
 
 
 test_eval_pipe = do
-  assertEqual "foo|bar" $ ev "split :: join '|'" "foo bar"
-  assertEqual "foo|bar" $ ev "foo bar :: join '|'" ""
-  assertEqual "foo|bar" $ ev "join '|' foo bar" "qux quux"
+  assertEqual (Just "foo|bar") $ ev "split :: join '|'" "foo bar"
+  assertEqual (Just "foo|bar") $ ev "foo bar :: join '|'" ""
+  assertEqual (Just "foo|bar") $ ev "join '|' foo bar" "qux quux"

@@ -1,26 +1,23 @@
 module Main where
 
 
-import System.IO
-import System.Console.Haskeline
+import Control.Monad.Trans
+import Control.Monad.Trans.Maybe
 
 import HackLine.Helpers
 import HackLine.CLI
 import HackLine.Evaluator
 
 
+type Evaluator = Int -> String -> Maybe String
+
+
 main :: IO ()
-main = parseArgs >>= greet 
+main = parseArgs >>= e >>= runMaybeT . loop 1 >> return ()
+  where 
+    e :: Args -> IO Evaluator
+    e (Args s) = return $ eval (spacer s)
 
 
-greet :: Args -> IO ()
-greet (Args a) = runInputT defaultSettings (loop e 1)
-  where e = eval (spacer a)
-
-
-loop :: (Int -> String -> String) -> Int -> InputT IO ()
-loop e i = do
-  minput <- getInputLine ""
-  case minput of
-    Nothing -> return ()
-    Just input -> outputStrLn (e i input) >> loop e (i+1)
+loop :: Int -> Evaluator -> MaybeT IO ()
+loop i e = readLine >>= liftMaybe . e i >>= liftIO . putStrLn >> loop (i+1) e

@@ -39,5 +39,5 @@ evaluate (Ctx i ca) (Pipe a b) = evaluate (Ctx i na) b
   where na = evaluate (Ctx i ca) a
 
 
-eval :: String -> Int -> String -> String 
-eval e i a = spacer $ evaluate (Ctx i [a]) (parse e)
+eval :: String -> Int -> String -> Maybe String 
+eval e i a = Just $ spacer (evaluate (Ctx i [a]) (parse e))
