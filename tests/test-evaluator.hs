@@ -53,6 +53,7 @@ test_evaluate_var = do
   assertEqual (Right ["a", "b", "c", "d"]) 
     $ evaluate (Ctx 0 ["a", "b", "c", "d"]) (parse ":~")
 
+
 test_eval = do
   assertEqual (Right "") $ ev "" ""
   assertEqual (Right "Foo Bar") $ ev "" "Foo Bar"

@@ -59,7 +59,6 @@ evaluate _ (Literal a) = Right [a]
 evaluate c (Var a) = case break (=='~') a of
   (l, "") -> Right [evalVar c l]
   (l, _:r) -> Right $ evalSliceVar c l r
--- evaluate c (Var a) = Right [evalVar c a]
 evaluate c (Group xs) = evalGroup c xs []
 evaluate c (Func f xs) = evaluate c (Group xs) >>= (getFunc f) c
 evaluate (Ctx i ca) (Pipe a b) = evaluate (Ctx i ca) a >>= nb
