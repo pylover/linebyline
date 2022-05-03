@@ -13,45 +13,54 @@ ev e a = eval e 0 a
 
 test_evaluate_literal = do
   assertEqual (Right ["foo bar baz"])
-    $ evaluate (Ctx 0 []) (parse "join ' ' foo bar baz")
+    $ evaluate (Ctx 0 "" []) (parse "join ' ' foo bar baz")
 
   assertEqual (Right ["foo,bar,baz"])
-    $ evaluate (Ctx 0 []) (parse "join ',' foo bar baz")
+    $ evaluate (Ctx 0 "" []) (parse "join ',' foo bar baz")
 
   assertEqual (Right ["foo,bar,baz"]) 
-    $ evaluate (Ctx 0 []) (parse "join , foo bar baz")
+    $ evaluate (Ctx 0 "" []) (parse "join , foo bar baz")
 
   assertEqual (Right ["foo::bar::baz"]) 
-    $ evaluate (Ctx 0 []) (parse "join '::' foo bar baz")
+    $ evaluate (Ctx 0 "" []) (parse "join '::' foo bar baz")
 
   assertEqual (Right ["foo:bar:baz"]) 
-    $ evaluate (Ctx 0 []) (parse "join : foo bar baz")
+    $ evaluate (Ctx 0 "" []) (parse "join : foo bar baz")
 
 
 test_evaluate_var = do
   assertEqual (Right ["foo", "bar", "baz"]) 
-    $ evaluate (Ctx 0 ["foo", "bar"]) (parse ":0 :1 baz")
+    $ evaluate (Ctx 0 "" ["foo", "bar"]) (parse ":0 :1 baz")
 
   assertEqual (Right ["foo", "bar", ":2"]) 
-    $ evaluate (Ctx 0 ["foo", "bar"]) (parse ":0 :1 :2")
+    $ evaluate (Ctx 0 "" ["foo", "bar"]) (parse ":0 :1 :2")
 
   assertEqual (Right ["foo", "bar", ":2"]) 
-    $ evaluate (Ctx 0 ["foo", "bar"]) (parse ":0 :1 :2")
+    $ evaluate (Ctx 0 "" ["foo", "bar"]) (parse ":0 :1 :2")
 
   assertEqual (Right ["foo", "bar", ":baz"]) 
-    $ evaluate (Ctx 0 ["foo", "bar"]) (parse ":0 :1 :baz")
+    $ evaluate (Ctx 0 "" ["foo", "bar"]) (parse ":0 :1 :baz")
 
   assertEqual (Right ["a", "b", "c", "d"]) 
-    $ evaluate (Ctx 0 ["a", "b", "c", "d"]) (parse ":0~")
+    $ evaluate (Ctx 0 "" ["a", "b", "c", "d"]) (parse ":0~")
 
   assertEqual (Right ["a", "b", "c"]) 
-    $ evaluate (Ctx 0 ["a", "b", "c", "d"]) (parse ":0~2")
+    $ evaluate (Ctx 0 "" ["a", "b", "c", "d"]) (parse ":0~2")
 
   assertEqual (Right ["a", "b", "c"]) 
-    $ evaluate (Ctx 0 ["a", "b", "c", "d"]) (parse ":~2")
+    $ evaluate (Ctx 0 "" ["a", "b", "c", "d"]) (parse ":~2")
 
   assertEqual (Right ["a", "b", "c", "d"]) 
-    $ evaluate (Ctx 0 ["a", "b", "c", "d"]) (parse ":~")
+    $ evaluate (Ctx 0 "" ["a", "b", "c", "d"]) (parse ":~")
+
+  assertEqual (Right ["2"]) 
+    $ evaluate (Ctx 2 "" []) (parse ":n")
+
+  assertEqual (Right [""]) 
+    $ evaluate (Ctx 2 "" ["foo bar"]) (parse ":l")
+
+  assertEqual (Right ["baz qux"]) 
+    $ evaluate (Ctx 2 "baz qux" ["foo bar"]) (parse ":l")
 
 
 test_eval = do

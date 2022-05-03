@@ -1,5 +1,5 @@
 module HackLine.Context where
 
 
-data Ctx = Ctx { index :: Int, args :: [String] }
+data Ctx = Ctx { index :: Int, line :: String, args :: [String] }
   deriving Show
