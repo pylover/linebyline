@@ -1,6 +1,5 @@
 module Main where
 
-import Debug.Trace
 import Control.Monad
 import Control.Monad.Trans
 import Control.Monad.Trans.Maybe
