@@ -56,7 +56,8 @@ evalGroup c (x:xs) r = case evaluate c x of
 
 
 evaluate :: Ctx -> Exp -> Either Signal [String]
-evaluate c Void = Right $ args c
+--evaluate c Void = Right $ args c
+evaluate _ Void = Right []
 evaluate _ (Literal a) = Right [a]
 evaluate c (Var a) = case break (=='~') a of
   (l, "") -> Right [evalVar c l]

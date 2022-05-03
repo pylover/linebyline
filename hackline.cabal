@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                hackline
-version:             0.2.8.0
+version:             0.2.8.1
 synopsis:            One-liner command line text processing tool
 -- description:
 homepage:            https://github.com/pylover/hackline

@@ -65,7 +65,7 @@ test_evaluate_var = do
 
 test_eval = do
   assertEqual (Right "") $ ev "" ""
-  assertEqual (Right "Foo Bar") $ ev "" "Foo Bar"
+  assertEqual (Right "") $ ev "" "Foo Bar"
   assertEqual (Right "foo") $ ev "foo" ""
   assertEqual (Right "foo bar baz") $ ev "foo bar baz" ""
   assertEqual (Right "join bar baz") $ ev "'join' bar baz" ""

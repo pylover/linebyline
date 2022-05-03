@@ -9,18 +9,25 @@ import HackLine.CLI
 import HackLine.Evaluator
 
 
+getScript :: [String] -> String
+getScript [] = ":~"
+getScript s = spacer s
+
+
 main :: IO ()
 main = parseArgs >>= e >>= runMaybeT . loop 1 >> return ()
   where 
     e :: Args -> IO Evaluator
-    e (Args s) = return $ evaluator (spacer s)
+    e (Args s) = return $ evaluator (getScript s)
 
 
-liftEval :: Either Signal String -> MaybeT IO ()
-liftEval (Right x) = liftIO $ putStrLn x
-liftEval (Left SuppressLine) = return ()
-liftEval (Left SuppressAll) = liftIO exit
+liftEval :: Int -> Either Signal String -> MaybeT IO Int
+liftEval i (Right x) = do
+  liftIO $ putStrLn x
+  return (i + 1)
+liftEval i (Left SuppressLine) = return i
+liftEval i (Left SuppressAll) = liftIO exit >> return i
 
 
 loop :: Int -> Evaluator -> MaybeT IO ()
-loop i e = readLine >>= liftEval . e i >> loop (i+1) e
+loop i e = readLine >>= liftEval i . e i >>= (\k ->  loop k e)
