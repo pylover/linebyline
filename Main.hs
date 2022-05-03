@@ -24,4 +24,7 @@ liftEval (Left SuppressAll) = liftIO exit >> mzero
 
 
 loop :: Int -> Evaluator -> MaybeT IO ()
-loop i e = readLine >>= liftEval . e i >>= liftIO . putStrLn >> loop (i+1) e
+loop i e = readLine 
+       >>= liftEval . e i
+       >>= liftIO . putStrLn 
+        >> loop (i+1) e
