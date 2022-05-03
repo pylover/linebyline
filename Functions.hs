@@ -2,6 +2,7 @@ module HackLine.Functions where
 
 
 import Data.List
+import Data.Map (Map, (!), member, fromList)
 import Text.Regex.TDFA
 
 import HackLine.Context
@@ -15,21 +16,19 @@ data Signal = IgnoreLine | SuppressLine | SuppressAll
 type Function = Ctx -> [String] -> Either Signal [String]
 
 
-functions :: [String]
-functions = 
-  [ "join"
-  , "split"
-  , "grep"
-  , "grab"
+functions :: Map String Function
+functions = fromList
+  [ ("join",  joinF)
+  , ("split", splitF)
+  , ("grep",  grepF)
+  , ("grab",  grabF)
+  , ("break", breakF)
+  , ("ignore", ignoreF)
   ]
 
 
 getFunc :: String -> Function
-getFunc "join" = joinF
-getFunc "split" = splitF
-getFunc "grep" = grepF
-getFunc "grab" = grabF
-getFunc "" = joinF
+getFunc = (functions ! )
 
 
 funcArgs :: [String] -> [String] -> [String]
@@ -66,3 +65,21 @@ grabF c (x:xs) = case filter (/="") m of
   y -> Right y
   where 
     m = (=~x) <$> funcArgs (args c) xs
+
+
+breakF :: Ctx -> [String] -> Either Signal [String]
+breakF c [] = breakF c ["^$"]
+breakF c (x:xs) = case any (=~x) a of
+  True -> Left SuppressAll
+  False -> Right a
+  where 
+    a = funcArgs (args c) xs
+
+
+ignoreF :: Ctx -> [String] -> Either Signal [String]
+ignoreF c [] = ignoreF c ["^$"]
+ignoreF c (x:xs) = case any (=~x) a of
+  True -> Left SuppressLine
+  False -> Right a
+  where 
+    a = funcArgs (args c) xs

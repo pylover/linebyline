@@ -2,6 +2,7 @@ module HackLine.Parser where
 
 import Data.List
 import Data.List.Split
+import Data.Map (member)
 
 import HackLine.Helpers
 import HackLine.Functions
@@ -46,7 +47,7 @@ eat ("::":xs) = (Pipe Void Void, xs)
 eat ((':':v):xs) = (Var v, xs)
 eat (('\'':v):xs) = (Literal (init v), xs)
 eat (x:xs) 
-  | x `elem` functions = (Func x [], xs)
+  | x `member` functions = (Func x [], xs)
   | otherwise = (Literal x, xs)
 
 
