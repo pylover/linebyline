@@ -1,6 +1,6 @@
 module Main where
 
-
+import Debug.Trace
 import Control.Monad
 import Control.Monad.Trans
 import Control.Monad.Trans.Maybe
@@ -17,14 +17,11 @@ main = parseArgs >>= e >>= runMaybeT . loop 1 >> return ()
     e (Args s) = return $ evaluator (spacer s)
 
 
-liftEval :: Either Signal String -> MaybeT IO String
-liftEval (Right x) = return x
-liftEval (Left SuppressLine) = mzero
-liftEval (Left SuppressAll) = liftIO exit >> mzero
+liftEval :: Either Signal String -> MaybeT IO ()
+liftEval (Right x) = liftIO $ putStrLn x
+liftEval (Left SuppressLine) = return ()
+liftEval (Left SuppressAll) = liftIO exit
 
 
 loop :: Int -> Evaluator -> MaybeT IO ()
-loop i e = readLine 
-       >>= liftEval . e i
-       >>= liftIO . putStrLn 
-        >> loop (i+1) e
+loop i e = readLine >>= liftEval . e i >> loop (i+1) e

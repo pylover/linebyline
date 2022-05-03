@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                hackline
-version:             0.2.4.3
+version:             0.2.5.2
 synopsis:            One-liner command line text processing tool
 -- description:
 homepage:            https://github.com/pylover/hackline
@@ -32,6 +32,7 @@ executable hackline
                      , optparse-applicative
                      , transformers
                      , mtl
+                     , regex-tdfa
   -- hs-source-dirs:
   default-language:    Haskell2010
 
@@ -53,6 +54,7 @@ Test-Suite test-tokenizer
                      , HTF
                      , mtl
                      , transformers
+                     , regex-tdfa
   other-modules:       Helpers, Tokenizer
   --hs-source-dirs:    tests
   default-language:    Haskell2010
@@ -64,6 +66,7 @@ Test-Suite test-parser
                      , HTF
                      , mtl
                      , transformers
+                     , regex-tdfa
   other-modules:       Helpers
                      , Context
                      , Tokenizer
@@ -79,6 +82,7 @@ Test-Suite test-evaluator
                      , HTF
                      , mtl
                      , transformers
+                     , regex-tdfa
   other-modules:       Helpers
                      , Context
                      , Tokenizer
