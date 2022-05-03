@@ -50,7 +50,7 @@ evalSliceVar c a b = case readMaybe <$> [a, b] of
 evalGroup :: Ctx -> [Exp] -> [String] -> Either Signal [String]
 evalGroup c [] r = Right r
 evalGroup c (x:xs) r = case evaluate c x of
-  Right rs -> evalGroup c xs (r ++ [spacer rs])
+  Right rs -> evalGroup c xs (r ++ rs)
   ls -> ls
 
 

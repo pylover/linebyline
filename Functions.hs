@@ -28,8 +28,6 @@ getFunc "" = joinF
 
 
 funcArgs :: [String] -> [String] -> [String]
--- funcArgs ca xs = ca ++ xs
--- Uncomment to ignore positional args when context has arguments
 funcArgs ca [] = ca
 funcArgs _ xs = xs
 
