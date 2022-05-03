@@ -20,6 +20,7 @@ functions =
   [ "join"
   , "split"
   , "grep"
+  , "grab"
   ]
 
 
@@ -27,6 +28,7 @@ getFunc :: String -> Function
 getFunc "join" = joinF
 getFunc "split" = splitF
 getFunc "grep" = grepF
+getFunc "grab" = grabF
 getFunc "" = joinF
 
 
@@ -55,3 +57,12 @@ grepF c (x:xs) = case filter (\(_, y, _) -> y /= "") m of
   where 
     m = (=~x) <$> funcArgs (args c) xs
     asm (b, z, a) = b ++ z ++ a
+
+
+grabF :: Ctx -> [String] -> Either Signal [String]
+grabF c [] = grabF c [".*"]
+grabF c (x:xs) = case filter (/="") m of
+  [] -> Left SuppressLine
+  y -> Right y
+  where 
+    m = (=~x) <$> funcArgs (args c) xs
