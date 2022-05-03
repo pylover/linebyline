@@ -12,7 +12,7 @@ test_parse_literal = do
   assertEqual Void $ parse ""
   assertEqual (Literal "foo") $ parse "foo"
   assertEqual (Group [Literal "foo", Literal "bar"]) $ parse "foo bar"
-  assertEqual (Group [Literal "foo", Literal "bar", Literal "baz"]) 
+  assertEqual (Group [Literal "foo", Group [Literal "bar", Literal "baz"]])
     $ parse "foo (bar baz)"
 
 
@@ -26,10 +26,9 @@ test_parse_pipe = do
   assertEqual (Pipe (Pipe (Literal "foo") (Literal "bar")) (Literal "baz"))
     $ parse "foo :: bar :: baz"
 
-
-  assertEqual (Pipe (
-        Pipe (Group [Literal "foo", Literal "bar"]) (Literal "bar"))
-       (Literal "baz"))
+  assertEqual (Pipe
+    (Pipe (Group [Group [Literal "foo", Literal "bar"]]) (Literal "bar"))
+    (Literal "baz"))
     $ parse "(foo bar) :: bar :: baz"
  
 
@@ -42,6 +41,13 @@ test_parse_func = do
       Literal "baz", 
       Func "split" [Literal "foo", Literal "qux"]]) 
     $ parse "join bar baz (split foo qux)"
+
+  assertEqual (
+    Func "join"
+      [ Group [Func "split" [Literal "foo", Literal "qux"]]
+      , Literal "baa"
+      , Literal "baz"])
+    $ parse "join (split foo qux) baa baz"
  
 
 test_parse_variable = do

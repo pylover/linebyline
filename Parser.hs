@@ -39,7 +39,7 @@ instance Monoid Exp where
 
 eat :: [String] -> (Exp, [String])
 eat [] = (mempty, [])
-eat ("(":xs) = (parse_ xp, ps)
+eat ("(":xs) = (Group [parse_ xp], ps)
   where (xp, ps) = splitByParenthesis xs
 eat ("::":xs) = (Pipe Void Void, xs)
 eat ((':':v):xs) = (Var v, xs)

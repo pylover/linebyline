@@ -77,3 +77,5 @@ test_eval_pipe = do
   assertEqual (Right "foo|bar") $ ev "foo bar :: join '|'" ""
   assertEqual (Right "foo|bar") $ ev "join '|' foo bar" "qux quux"
   assertEqual (Right "foo,bar") $ ev "split :: join ',' :~" "foo bar"
+  assertEqual (Right "foo|bar,foo,bar") 
+    $ ev "split :: join ',' (join '|' :~) :~" "foo bar"
