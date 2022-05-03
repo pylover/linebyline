@@ -1,9 +1,9 @@
 module HackLine.Functions where
 
 
-import Data.List
+import Data.List (intercalate)
 import Data.Map (Map, (!), member, fromList)
-import Text.Regex.TDFA
+import Text.Regex.TDFA ((=~))
 
 import HackLine.Context
 import HackLine.Helpers

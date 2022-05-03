@@ -86,4 +86,5 @@ test_eval_grep = do
   assertEqual (Right "foo bar") $ ev "grep 'foo'" "foo bar"
   assertEqual (Right "baz foo bar") $ ev "grep 'foo'" "baz foo bar"
   assertEqual (Left SuppressLine) $ ev "grep '1'" "baz foo bar"
+  assertEqual (Left SuppressLine) $ ev "ignore 'foo'" "baz foo bar"
   assertEqual (Left SuppressAll) $ ev "break 'bar'" "baz foo bar"
