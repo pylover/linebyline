@@ -49,7 +49,9 @@ splitF c (x:xs) = Right $ split x a
 
 grepF :: Ctx -> [String] -> Either Signal [String]
 grepF c [] = grepF c [".*"]
-grepF c (x:xs) = case filter (/="") m of
+grepF c (x:xs) = case filter (\(_, y, _) -> y /= "") m of
   [] -> Left SuppressLine
-  r -> Right r
-  where m = (=~x) <$> funcArgs (args c) xs
+  y -> Right $ asm <$> y
+  where 
+    m = (=~x) <$> funcArgs (args c) xs
+    asm (b, z, a) = b ++ z ++ a
