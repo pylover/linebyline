@@ -1,4 +1,7 @@
-module HackLine.Tokenizer where
+module HackLine.Tokenizer 
+  ( tokenize
+  , tokenize_
+  ) where
 
 
 import HackLine.Helpers

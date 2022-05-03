@@ -1,6 +1,7 @@
 module HackLine.Evaluator 
    ( Signal(..)
    , eval
+   , eval_
    , evaluate
    , evaluator
    , Evaluator(..)
@@ -66,8 +67,14 @@ evaluate c (Pipe a b) = evaluate c a >>= nb
   where nb x = evaluate (Ctx (index c) (line c) x) b
 
 
+eval_ :: Ctx -> [String] -> [Exp] -> Either Signal String
+eval_ _ y [] = Right $ spacer y
+eval_ c y (x:xs) = evaluate c x >>= next
+  where next r = eval_ c (y ++ r) xs
+
+
 eval :: String -> Int -> String -> Either Signal String 
-eval e i a = evaluate (Ctx i a [a]) (parse e) >>= Right . spacer
+eval e i a = eval_ (Ctx i a [a]) [] (parse e)
 
 
 evaluator :: String -> Evaluator
