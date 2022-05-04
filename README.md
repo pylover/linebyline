@@ -124,7 +124,7 @@ bar
 - `:0~3` -> **Argument Range**: get third input arguments.
 - A `::` B -> **Pipe**: pass output of the first expression into the next one.
 
-- A `:::` B -> **After** Run expression `B` after `A` without passing the
+- A `:::` B -> **After**: Run expression `B` after `A` without passing the
     output, instead the whole line will be used as the input for the expression
     `B`
 
