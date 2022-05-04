@@ -9,7 +9,7 @@ import HackLine.Context
 import HackLine.Helpers
 
 
-data Signal = IgnoreLine | SuppressLine | SuppressAll
+data Signal = SuppressLine | SuppressAll
   deriving (Eq, Show)
 
 
