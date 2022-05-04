@@ -48,6 +48,10 @@ join ',' [foo, bar] -> foo,bar
 
 3. Print the result and process next line.
 
+```
+foo bar
+```
+
 ## Install
 
 ?Portability
@@ -126,11 +130,17 @@ bar
 
 ## Functions
 
-TODO:
+- `join [sep] ...`
+- `split [sep] ...`
+- `grep pattern`
+- `grab pattern`
+- `ignore pattern`
+- `break pattern`
 
 ## Special variables
 
-TODO:
-
-- `:l`
-- `:n`
+- `:~`: get all input arguments
+- `:2~`: get input arguments from index 2 to the end.
+- `:~5`: take 5 input arguments from the first.
+- `:l`: get the input lien.
+- `:n`: get the line number.
