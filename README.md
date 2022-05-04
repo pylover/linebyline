@@ -25,6 +25,29 @@ the example above, every line of the standard input will be injected into
 `expression A`, then result will pass into the `expression B`.
 
 
+Let's another example, in the script:
+
+```bash
+echo "foo bar" | hackline split :: join ','
+
+``` 
+
+detailed instruction will be:
+
+1. Split the input line by `space`:
+
+```
+split ' ' [input-line] -> [foo, bar]
+```
+
+2. The split result passes as the positional arguments into the `join ','`:
+
+```
+join ',' [foo, bar] -> foo,bar
+```
+
+3. Print the result and process next line.
+
 ## Install
 
 ?Portability
