@@ -70,6 +70,7 @@ test_eval = do
   assertEqual (Right "foo bar baz") $ ev "foo bar baz" ""
   assertEqual (Right "join bar baz") $ ev "'join' bar baz" ""
   assertEqual (Right "foo bar baz qux") $ ev "split ' ' :0 baz qux" "foo bar"
+  assertEqual (Right "\n") $ ev "\n" ""
 
 
 test_eval_pipe = do

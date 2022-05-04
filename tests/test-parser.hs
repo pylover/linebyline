@@ -11,6 +11,7 @@ main = htfMain htf_thisModulesTests
 test_parse_literal = do
   assertEqual [Void] $ parse ""
   assertEqual [Literal "foo"] $ parse "foo"
+  assertEqual [Literal "\n"] $ parse "\n"
   assertEqual [Group [Literal "foo", Literal "bar"]] $ parse "foo bar"
   assertEqual [Group [Literal "foo", Group [Literal "bar", Literal "baz"]]]
     $ parse "foo (bar baz)"

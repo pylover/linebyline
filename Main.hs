@@ -1,5 +1,6 @@
 module Main where
 
+
 import Control.Monad
 import Control.Monad.Trans
 import Control.Monad.Trans.Maybe
@@ -30,4 +31,7 @@ liftEval i (Left SuppressAll) = liftIO exit >> return i
 
 
 loop :: Int -> Evaluator -> MaybeT IO ()
-loop i e = readLine >>= liftEval i . e i >>= (\k ->  loop k e)
+loop i e = readLine >>= process >>= reloop
+  where 
+    process = liftEval i . e i 
+    reloop ni = loop ni e

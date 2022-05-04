@@ -19,10 +19,12 @@ test_tokenize = do
   assertEqual ["foo", "(", "bar", "(", "baz", ")", ")"] 
     $ tokenize "foo (bar (baz))"
 
+  -- Pipe related
   assertEqual ["foo", "::", "bar"] $ tokenize "foo:: bar"
   assertEqual ["foo", "::", "bar"] $ tokenize "foo :: bar"
   assertEqual ["foo", "::", "bar"] $ tokenize "foo::bar"
-  
   assertEqual ["foo", "'join a b c'"] $ tokenize "foo 'join a b c'"
-
   assertEqual ["foo", ":1:9"] $ tokenize "foo :1:9"
+  
+  -- Newline
+  assertEqual ["foo", "\n", "bar"] $ tokenize "foo \n bar"
