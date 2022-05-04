@@ -1,5 +1,18 @@
 # Hackline
 
+
+## Install
+
+Install `cabal`, then:
+
+```bash
+make install
+```
+
+Add `$HOME/.cabal/bin` into the `PATH` environment variable if not added yet!
+
+*TODO: Portability*
+
 ## Why
 
 I just figured out the `awk` is hard to learn and disappears
@@ -51,10 +64,6 @@ join ',' [foo, bar] -> foo,bar
 ```
 foo bar
 ```
-
-## Install
-
-?Portability
 
 ## Usage examples
 
