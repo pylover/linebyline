@@ -35,4 +35,5 @@ test_tokenize = do
 test_tokenize_escape = do
   assertEqual ["foo", "\\:", "bar"] $ tokenize "foo \\: bar"
   assertEqual ["foo", "\\:0", "bar"] $ tokenize "foo \\:0 bar"
-
+  assertEqual ["\\:"] $ tokenize "\\:"
+  assertEqual ["\\::"] $ tokenize "\\::"

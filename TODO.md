@@ -1,5 +1,3 @@
-- Escape character
-- \t \r \n \\
 - Search and Replace
 - Command line desciption and header text
 - Manual page

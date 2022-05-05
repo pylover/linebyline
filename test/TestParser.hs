@@ -69,6 +69,12 @@ test_parse_quote = do
     $ parse "'join foo bar'"
 
 
+test_parse_escape = do
+  assertEqual [Literal ":"] $ parse "\\:"
+  assertEqual [Literal "::"] $ parse "\\::"
+  -- assertEqual [Literal ":::"] $ parse "\\:::"
+
+
 test_parse_root = do
   assertEqual
     [ Func "join" [Literal "foo", Literal "bar"]
