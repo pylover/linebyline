@@ -19,19 +19,24 @@ versionParser = infoOption (showVersion version)
   <> help "Print version information" )
 
 
-parser :: Parser Args
-parser = Args
-  <$> many ( strArgument (
-     ( metavar "SCRIPT..."
-    <> help "Hackline script to execute line-by-line on input." )))
+scriptParser :: Parser [String]
+scriptParser = many ( strArgument (
+   ( metavar "SCRIPT..."
+  <> help "Hackline script to execute line-by-line on input." )))
 
 
-options :: ParserInfo Args
-options = info (parser <**> versionParser <**> helper)
-   ( fullDesc
-  <> progDesc "Foo Bar Baz"
-  <> header "Qux" )
+appInfo :: InfoMod s
+appInfo = fullDesc
+       <> progDesc ""
+       <> header "Line-by-line column based text editor"
+
+
+parserInfo :: ParserInfo Args
+parserInfo = info ( Args 
+                <$> scriptParser 
+               <**> versionParser 
+               <**> helper) appInfo
 
 
 parseArgs :: IO Args
-parseArgs = customExecParser (prefs helpShowGlobals) options
+parseArgs = customExecParser (prefs helpShowGlobals) parserInfo

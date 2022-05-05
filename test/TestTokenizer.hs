@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
-module TestTokenizer (htf_thisModulesTests) where
+module TestTokenizer (htf_thisModulesTests, main) where
 
 
 import Test.Framework
@@ -30,3 +30,9 @@ test_tokenize = do
 
   -- Newline
   assertEqual ["foo", "\n", "bar"] $ tokenize "foo \n bar"
+
+
+test_tokenize_escape = do
+  assertEqual ["foo", "\\:", "bar"] $ tokenize "foo \\: bar"
+  assertEqual ["foo", "\\:0", "bar"] $ tokenize "foo \\:0 bar"
+

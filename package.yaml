@@ -43,19 +43,48 @@ executables:
       - optparse-applicative >=0.16.1.0
 
 tests:
-  linebyline-test:
-    main:                Main
-    source-dirs:    
-      - test
+
+  test-all:
+    main:                All
+    source-dirs:         test
     other-modules:
       - TestHelpers
       - TestTokenizer
       - TestParser
       - TestEvaluator
-    ghc-options:
-      - -threaded
-      - -rtsopts
-      - -with-rtsopts=-N
+    dependencies:
+      - HTF
+      - linebyline
+
+
+  test-helpers:
+    main:                TestHelpers
+    other-modules:       TestHelpers
+    source-dirs:         test
+    dependencies:
+      - HTF
+      - linebyline
+
+  test-tokenizer:
+    main:                TestTokenizer
+    other-modules:       TestTokenizer
+    source-dirs:         test
+    dependencies:
+      - HTF
+      - linebyline
+
+  test-parser:
+    main:                TestParser
+    other-modules:       TestParser
+    source-dirs:         test
+    dependencies:
+      - HTF
+      - linebyline
+
+  test-evaluator:
+    main:                TestEvaluator
+    other-modules:       TestEvaluator
+    source-dirs:         test
     dependencies:
       - HTF
       - linebyline

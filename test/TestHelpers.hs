@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
-module TestHelpers (htf_thisModulesTests) where
+module TestHelpers (htf_thisModulesTests, main) where
 
 
 import Test.Framework

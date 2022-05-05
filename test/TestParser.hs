@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
-module TestParser (htf_thisModulesTests) where
+module TestParser (htf_thisModulesTests, main) where
 
 
 import Test.Framework
