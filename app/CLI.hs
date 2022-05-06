@@ -22,7 +22,7 @@ versionParser = infoOption (showVersion version)
 scriptParser :: Parser [String]
 scriptParser = many ( strArgument (
    ( metavar "SCRIPT..."
-  <> help "Hackline script to execute line-by-line on input." )))
+  <> help "Line by line script to execute line-by-line on input." )))
 
 
 appInfo :: InfoMod s
