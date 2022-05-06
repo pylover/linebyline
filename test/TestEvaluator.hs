@@ -86,32 +86,6 @@ test_eval_pipe = do
     $ ev "split :: join ',' (join '|' :~) :~" "foo bar"
 
 
-test_eval_grep = do
-  assertEqual (Right "1,2") $ ev "split :: grep '[0-9]+' :: join ','" "a 1 2"
-  assertEqual (Right "foo bar") $ ev "grep 'foo'" "foo bar"
-  assertEqual (Right "baz foo bar") $ ev "grep 'foo'" "baz foo bar"
-  assertEqual (Left SuppressLine) $ ev "grep '1'" "baz foo bar"
-  assertEqual (Left SuppressLine) $ ev "ignore 'foo'" "baz foo bar"
-  assertEqual (Left SuppressAll) $ ev "break 'bar'" "baz foo bar"
-
-
 test_eval_after = do
   assertEqual (Right "a,b a|b") 
     $ ev "split :: join ',' ::: split :: join '|'" "a b"
-
-
-test_search_and_replace = do
-  assertEqual (Right "oof bar") 
-    $ ev "replace foo oof" "foo bar"
-
-  assertEqual (Right "oof oof bar") 
-    $ ev "split :: replace foo oof" "foo foo bar"
-
-  assertEqual (Right "foo bar") 
-    $ ev "replace foo" "foo bar"
-
-  assertEqual (Right "foo bar") 
-    $ ev "replace" "foo bar"
-
-  assertEqual (Right "") 
-    $ ev "replace" ""

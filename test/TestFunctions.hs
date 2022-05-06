@@ -5,6 +5,38 @@ module TestFunctions (htf_thisModulesTests, main) where
 import Test.Framework
 
 import Functions
+import Evaluator (eval)
 
 
 main = htfMain htf_thisModulesTests
+
+
+ev e a = eval e 0 a
+
+
+test_func_search_and_replace = do
+  assertEqual (Right "oof bar") 
+    $ ev "replace foo oof" "foo bar"
+
+  assertEqual (Right "oof oof bar") 
+    $ ev "split :: replace foo oof" "foo foo bar"
+
+  assertEqual (Right "foo bar") 
+    $ ev "replace foo" "foo bar"
+
+  assertEqual (Right "foo bar") 
+    $ ev "replace" "foo bar"
+
+  assertEqual (Right "") 
+    $ ev "replace" ""
+
+
+test_func_grep = do
+  assertEqual (Right "1,2") $ ev "split :: grep '[0-9]+' :: join ','" "a 1 2"
+  assertEqual (Right "foo bar") $ ev "grep 'foo'" "foo bar"
+  assertEqual (Right "baz foo bar") $ ev "grep 'foo'" "baz foo bar"
+  assertEqual (Left SuppressLine) $ ev "grep '1'" "baz foo bar"
+  assertEqual (Left SuppressLine) $ ev "ignore 'foo'" "baz foo bar"
+  assertEqual (Left SuppressAll) $ ev "break 'bar'" "baz foo bar"
+
+
