@@ -10,10 +10,6 @@ import Tokenizer
 main = htfMain htf_thisModulesTests
 
 
-test_tokenize_ = do
-  assertEqual ["foo"] $ tokenize_ "foo" ""
-
-
 test_tokenize = do
   assertEqual [] $ tokenize ""
   assertEqual ["foo", "bar"] $ tokenize "foo bar"
@@ -25,6 +21,7 @@ test_tokenize = do
   assertEqual ["foo", "::", "bar"] $ tokenize "foo:: bar"
   assertEqual ["foo", "::", "bar"] $ tokenize "foo :: bar"
   assertEqual ["foo", "::", "bar"] $ tokenize "foo::bar"
+  assertEqual ["foo", ":::", "bar"] $ tokenize "foo ::: bar"
   assertEqual ["foo", "'join a b c'"] $ tokenize "foo 'join a b c'"
   assertEqual ["foo", ":1:9"] $ tokenize "foo :1:9"
 
@@ -37,3 +34,5 @@ test_tokenize_escape = do
   assertEqual ["foo", "\\:0", "bar"] $ tokenize "foo \\:0 bar"
   assertEqual ["\\:"] $ tokenize "\\:"
   assertEqual ["\\::"] $ tokenize "\\::"
+  assertEqual ["\\:\\:"] $ tokenize "\\:\\:"
+  assertEqual ["foo\\:\\:baz"] $ tokenize "foo\\:\\:baz"

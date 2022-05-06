@@ -72,17 +72,16 @@ test_parse_quote = do
 test_parse_escape = do
   assertEqual [Literal ":"] $ parse "\\:"
   assertEqual [Literal "::"] $ parse "\\::"
-  -- assertEqual [Literal ":::"] $ parse "\\:::"
+  assertEqual [Literal ":::"] $ parse "\\:\\::"
+  assertEqual [Literal ":::"] $ parse "\\:\\:\\:"
 
 
 test_parse_root = do
-  assertEqual
-    [ Func "join" [Literal "foo", Literal "bar"]
-    , Func "join" [Literal "bar", Literal "baz"]]
+  assertEqual [After (Func "join" [Literal "foo", Literal "bar"])
+                     (Func "join" [Literal "bar", Literal "baz"])]
     $ parse "join foo bar ::: join bar baz"
 
-  assertEqual 
-      [ Func "join" [Literal "foo", Literal "bar"]
-      , Pipe (Func "join" [Literal "bar", Literal "baz"])
-             (Func "join" [Literal "a", Literal "b"])]
-    $ parse "join foo bar ::: join bar baz :: join a b"
+  assertEqual [After (After (Func "join" [Literal "foo", Literal "bar"])
+                            (Func "join" [Literal "bar", Literal "baz"]))
+                     (Func "join" [Literal "a", Literal "b"])]
+    $ parse "join foo bar ::: join bar baz ::: join a b"

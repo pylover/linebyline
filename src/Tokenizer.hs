@@ -1,23 +1,25 @@
 module Tokenizer 
   ( tokenize
-  , tokenize_
   ) where
 
+
+import Data.List
 
 import Helpers
 
 
 tokenize_ :: String -> String -> [String]
 tokenize_ c "" = c +? []
+tokenize_ ('\\':cs) (x:xs) = tokenize_ (x : '\\' : cs) xs
 tokenize_ c (' ':xs) = c +? tokenize_ "" xs
-tokenize_ c ('\\':x:xs) = c +? tokenize_ ['\\', x] xs
-tokenize_ c ('\'':xs) = c +? ((quote xq) : tokenize_ "" qs)
+tokenize_ c ('\'':xs) = c +? (quote (reverse xq) +? tokenize_ "" qs)
   where (xq, (_:qs)) = break (=='\'') xs
+tokenize_ c (':':':':':':xs) = c +? (":::" : tokenize_ "" xs)
 tokenize_ c (':':':':xs) = c +? ("::" : tokenize_ "" xs)
 tokenize_ c (x:xs) 
   | x `elem` "()" = c +? ([x] : tokenize_ "" xs)
-  | otherwise = tokenize_ (c ++ [x]) xs
+  | otherwise = tokenize_ (x : c) xs
 
 
 tokenize :: String -> [String]
-tokenize = tokenize_ ""
+tokenize s = reverse <$> tokenize_ "" s

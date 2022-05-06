@@ -17,12 +17,16 @@ data Exp
   | Group [Exp]
   | Func String [Exp]
   | Pipe Exp Exp
+  | After Exp Exp
   deriving (Eq, Show)
 
 
 instance Semigroup Exp where
   a <> Void = a
   Void <> a = a
+
+  a <> (After ls rs) = After (a <> ls) rs
+  (After ls rs) <> a = After ls (rs <> a)
 
   a <> (Pipe as e) = Pipe (a <> as) e
   (Pipe e as) <> a = Pipe e (as <> a)
@@ -40,17 +44,25 @@ instance Monoid Exp where
   mempty = Void
 
 
+unEscape :: String -> String
+unEscape s = case break (=='\\') s of
+  ("", "") -> ""
+  (a, "") -> a
+  (a, (_:"")) -> a
+  (a, (_:x:xs)) -> a ++ [x] ++ unEscape xs
+
+
 eat :: [String] -> (Exp, [String])
 eat [] = (mempty, [])
 eat ("(":xs) = (Group [parse_ xp], ps)
   where (xp, ps) = splitByParenthesis xs
+eat (":::":xs) = (After Void Void, xs)
 eat ("::":xs) = (Pipe Void Void, xs)
 eat ((':':v):xs) = (Var v, xs)
 eat (('\'':v):xs) = (Literal (init v), xs)
-eat (('\\':v):xs) = (Literal v, xs)
 eat (x:xs) 
   | x `member` functions = (Func x [], xs)
-  | otherwise = (Literal x, xs)
+  | otherwise = (Literal (unEscape x), xs)
 
 
 parse_ :: [String] -> Exp
@@ -60,4 +72,5 @@ parse_ xs = exp <> parse_ rs
 
 
 parse :: String -> [Exp]
-parse s = parse_.tokenize <$> splitOn ":::" s
+parse s = [(parse_ . tokenize) s]
+-- parse s = parse_.tokenize <$> splitOn ":::" s
