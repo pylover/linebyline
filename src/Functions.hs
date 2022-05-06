@@ -99,7 +99,6 @@ replaceF c (p:r:xs) = Right $ strReplace p r <$> funcArgs (args c) xs
 replaceF c _ = Right (args c) 
 
 
-
 capitalizeF :: Ctx -> [String] -> Either Signal [String]
 capitalizeF c xs = Right $ capitalize <$> funcArgs (args c) xs
 

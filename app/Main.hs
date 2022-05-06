@@ -18,9 +18,9 @@ getScript s = spacer s
 
 
 main :: IO ()
-main = parseArgs >>= e >>= runMaybeT . loop 1 >> return ()
+main = parseArgs >>= evaluator >>= runMaybeT . loop 1 >> return ()
   where 
-    e (Args s) = return $ eval (getScript s)
+    evaluator (Args s) = return $ eval (getScript s)
     loop i e = readLine >>= process >>= reloop
       where 
         process = liftEval i . e i 
