@@ -43,7 +43,6 @@ executables:
       - optparse-applicative >=0.16.1.0
 
 tests:
-
   test-all:
     main:                All
     source-dirs:         test
@@ -55,7 +54,6 @@ tests:
     dependencies:
       - HTF
       - linebyline
-
 
   test-functions:
     main:                TestFunctions
