@@ -48,7 +48,7 @@ tests:
     main:                All
     source-dirs:         test
     other-modules:
-      - TestHelpers
+      - TestFunctions
       - TestTokenizer
       - TestParser
       - TestEvaluator
@@ -57,9 +57,9 @@ tests:
       - linebyline
 
 
-  test-helpers:
-    main:                TestHelpers
-    other-modules:       TestHelpers
+  test-functions:
+    main:                TestFunctions
+    other-modules:       TestFunctions
     source-dirs:         test
     dependencies:
       - HTF

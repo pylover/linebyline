@@ -1,14 +1,13 @@
 module Helpers 
-  ( split
-  , spacer
+  ( spacer
   , quote
-  , (+?)
-  , splitByParenthesis
+  , matchParenthesis
   , strReplace
   )  where
 
 
 import Data.List
+import Data.List.Split
 import Text.Regex.TDFA
 
 
@@ -20,17 +19,12 @@ splitPar i left (")":xs) = splitPar (i - 1) (left ++ [")"]) xs
 splitPar i left (x:xs) = splitPar i (left ++ [x]) xs
 
 
-splitByParenthesis :: [String] -> ([String], [String])
-splitByParenthesis = splitPar 0 []
+matchParenthesis :: [String] -> ([String], [String])
+matchParenthesis = splitPar 0 []
 
 
 spacer :: [String] -> String
 spacer xs = intercalate " " xs
-
-
-(+?) :: String -> [String] -> [String]
-(+?) "" xs = xs
-(+?) a xs = a : xs
 
 
 quote :: String -> String
@@ -39,18 +33,6 @@ quote = decorate '\''
 
 decorate :: Char -> String -> String
 decorate c s  = c : s ++ [c]
-
-
-split_ :: String -> String -> String -> [String]
-split_ c n "" = [c]
-split_ c n (s:ss)= case stripPrefix n (s:ss) of
-  Just x -> c : split_ "" n x
-  Nothing -> split_ (c ++ [s]) n ss
-
-
-split :: String -> String -> [String]
-split s xs = filter (/="") res
-  where res = split_ "" s xs
 
 
 strReplace :: String -> String -> String -> String

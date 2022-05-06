@@ -53,7 +53,7 @@ unEscape s = case break (=='\\') s of
 eat :: [String] -> (Exp, [String])
 eat [] = (mempty, [])
 eat ("(":xs) = (Group [parse_ xp], ps)
-  where (xp, ps) = splitByParenthesis xs
+  where (xp, ps) = matchParenthesis xs
 eat (":::":xs) = (After Void Void, xs)
 eat ("::":xs) = (Pipe Void Void, xs)
 eat ((':':v):xs) = (Var v, xs)
