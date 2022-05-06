@@ -14,6 +14,10 @@ main = htfMain htf_thisModulesTests
 ev e a = eval e 0 a
 
 
+test_func_split = do
+  assertEqual (Right "foo bar baz") $ ev "split" "foo  bar baz"
+
+
 test_func_search_and_replace = do
   assertEqual (Right "oof bar") 
     $ ev "replace foo oof" "foo bar"
@@ -32,7 +36,7 @@ test_func_search_and_replace = do
 
 
 test_func_grep = do
-  assertEqual (Right "1,2") $ ev "split :: grep '[0-9]+' :: join ','" "a 1 2"
+  assertEqual (Right "a,1,2") $ ev "split :: grep '[0-9]+' :: join ','" "a 1 2"
   assertEqual (Right "foo bar") $ ev "grep 'foo'" "foo bar"
   assertEqual (Right "baz foo bar") $ ev "grep 'foo'" "baz foo bar"
   assertEqual (Left SuppressLine) $ ev "grep '1'" "baz foo bar"

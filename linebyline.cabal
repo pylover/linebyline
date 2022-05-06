@@ -5,7 +5,7 @@ cabal-version: 1.12
 -- see: https://github.com/sol/hpack
 
 name:           linebyline
-version:        0.2.11.0
+version:        0.2.12.1
 description:    Please see the README on GitHub at <https://github.com/pylover/linebyline#readme>
 homepage:       https://github.com/pylover/linebyline#readme
 bug-reports:    https://github.com/pylover/linebyline/issues

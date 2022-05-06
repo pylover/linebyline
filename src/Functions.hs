@@ -53,18 +53,18 @@ joinF c (x:xs) = Right $ [intercalate x a]
 
 splitF :: Ctx -> [String] -> Either Signal [String]
 splitF c [] = splitF c [" "]
-splitF c (x:xs) = Right $ splitOn x a
+splitF c (x:xs) = Right $ filter (/="") (splitOn x a)
   where a = spacer $ funcArgs (args c) xs
 
 
 grepF :: Ctx -> [String] -> Either Signal [String]
 grepF c [] = grepF c [".*"]
-grepF c (x:xs) = case filter (\(_, y, _) -> y /= "") m of
+grepF c (x:xs) = case filter (/="") m of
   [] -> Left SuppressLine
-  y -> Right $ asm <$> y
+  _ -> Right a
   where 
-    m = (=~x) <$> funcArgs (args c) xs
-    asm (b, z, a) = b ++ z ++ a
+    a = funcArgs (args c) xs
+    m = (=~x) <$> a
 
 
 grabF :: Ctx -> [String] -> Either Signal [String]
