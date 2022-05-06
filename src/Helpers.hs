@@ -11,16 +11,16 @@ import Data.List.Split
 import Text.Regex.TDFA
 
 
-splitPar :: Int -> [String] -> [String] -> ([String], [String])
-splitPar _ left [] = (left, [])
-splitPar i left ("(":xs) = splitPar (i + 1) (left ++ ["("]) xs
-splitPar 0 left (")":xs) = (left, xs)
-splitPar i left (")":xs) = splitPar (i - 1) (left ++ [")"]) xs
-splitPar i left (x:xs) = splitPar i (left ++ [x]) xs
+closingPar :: Int -> [String] -> [String] -> ([String], [String])
+closingPar _ left [] = (left, [])
+closingPar i left ("(":xs) = closingPar (i + 1) (left ++ ["("]) xs
+closingPar 0 left (")":xs) = (left, xs)
+closingPar i left (")":xs) = closingPar (i - 1) (left ++ [")"]) xs
+closingPar i left (x:xs) = closingPar i (left ++ [x]) xs
 
 
 matchParenthesis :: [String] -> ([String], [String])
-matchParenthesis = splitPar 0 []
+matchParenthesis = closingPar 0 []
 
 
 spacer :: [String] -> String

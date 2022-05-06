@@ -44,10 +44,8 @@ instance Monoid Exp where
 
 unEscape :: String -> String
 unEscape s = case break (=='\\') s of
-  ("", "") -> ""
-  (a, "") -> a
-  (a, (_:"")) -> a
   (a, (_:x:xs)) -> a ++ [x] ++ unEscape xs
+  (a,        _) -> a
 
 
 eat :: [String] -> (Exp, [String])
