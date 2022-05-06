@@ -3,9 +3,9 @@ module Parser (Exp(..), parse) where
 
 import Data.Map (member)
 
-import Helpers
-import Functions
-import Tokenizer
+import Helpers (unEscape, matchParenthesis)
+import Functions (functions)
+import Tokenizer (tokenize)
 
 
 data Exp
@@ -40,12 +40,6 @@ instance Semigroup Exp where
 
 instance Monoid Exp where
   mempty = Void
-
-
-unEscape :: String -> String
-unEscape s = case break (=='\\') s of
-  (a, (_:x:xs)) -> a ++ [x] ++ unEscape xs
-  (a,        _) -> a
 
 
 eat :: [String] -> (Exp, [String])

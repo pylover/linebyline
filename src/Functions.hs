@@ -1,4 +1,8 @@
-module Functions where
+module Functions 
+  ( functions
+  , getFunc
+  , Signal(..)
+  ) where
 
 
 import Data.List (intercalate)

@@ -3,6 +3,7 @@ module Helpers
   , quote
   , matchParenthesis
   , strReplace
+  , unEscape
   )  where
 
 
@@ -33,6 +34,12 @@ quote = decorate '\''
 
 decorate :: Char -> String -> String
 decorate c s  = c : s ++ [c]
+
+
+unEscape :: String -> String
+unEscape s = case break (=='\\') s of
+  (a, (_:x:xs)) -> a ++ [x] ++ unEscape xs
+  (a, _) -> a
 
 
 strReplace :: String -> String -> String -> String

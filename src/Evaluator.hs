@@ -7,11 +7,10 @@ module Evaluator
 
 import Text.Read
 
-import Helpers
+import Helpers (spacer)
 import Context
-import Tokenizer
-import Parser
-import Functions
+import Parser (Exp(..), parse)
+import Functions (Signal(..), getFunc)
 
 
 getArg :: Ctx -> Int -> String

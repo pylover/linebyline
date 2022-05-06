@@ -4,4 +4,4 @@
 - Readme, Detailed functions documentation.
 - Readme, Mention about function arguments behaviour.
 - Haddock
-
+- Update changelog
