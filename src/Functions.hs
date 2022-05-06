@@ -11,7 +11,7 @@ import Data.Map (Map, (!), member, fromList)
 import Text.Regex.TDFA ((=~))
 
 import Context
-import Helpers (strReplace, spacer, capitalize)
+import Helpers (strReplace, spacer, capitalize, lower, upper)
 
 
 data Signal = SuppressLine | SuppressAll
@@ -30,7 +30,9 @@ functions = fromList
   , ("break",       breakF      )
   , ("ignore",      ignoreF     )
   , ("replace",     replaceF    )
-  , ("capitalize",  capitalizeF    )
+  , ("capitalize",  capitalizeF )
+  , ("upper",       upperF      )
+  , ("lower",       lowerF      )
   ]
 
 
@@ -100,3 +102,11 @@ replaceF c _ = Right (args c)
 
 capitalizeF :: Ctx -> [String] -> Either Signal [String]
 capitalizeF c xs = Right $ capitalize <$> funcArgs (args c) xs
+
+
+lowerF :: Ctx -> [String] -> Either Signal [String]
+lowerF c xs = Right $ lower <$> funcArgs (args c) xs
+
+
+upperF :: Ctx -> [String] -> Either Signal [String]
+upperF c xs = Right $ upper <$> funcArgs (args c) xs

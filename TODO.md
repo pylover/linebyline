@@ -1,4 +1,3 @@
-- Upper, Lower, Capitalize functions
 - Manual page
 - Readme, A lot of examples
 - Readme, Detailed functions documentation.

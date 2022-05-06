@@ -5,10 +5,12 @@ module Helpers
   , strReplace
   , unEscape
   , capitalize
+  , lower
+  , upper
   )  where
 
 
-import Data.Char (toUpper)
+import Data.Char (toUpper, toLower)
 import Data.List
 import Data.List.Split
 import Text.Regex.TDFA
@@ -54,3 +56,11 @@ strReplace p r s = case s =~ p of
 capitalize :: String -> String
 capitalize "" = ""
 capitalize (x:xs) = toUpper x : xs
+
+
+lower :: String -> String
+lower xs = toLower <$> xs
+
+
+upper :: String -> String
+upper xs = toUpper <$> xs

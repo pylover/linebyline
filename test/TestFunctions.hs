@@ -43,3 +43,8 @@ test_func_grep = do
 test_func_capitalize = do
   assertEqual (Right "Foo bar") $ ev "capitalize" "foo bar"
   assertEqual (Right "Foo Bar") $ ev "split:: capitalize" "foo bar"
+
+
+test_func_upper_lower = do
+  assertEqual (Right "FOO BAR") $ ev "upper" "foo bar"
+  assertEqual (Right "foo bar") $ ev "lower" "FOO BAR"
