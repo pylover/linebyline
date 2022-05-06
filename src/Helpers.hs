@@ -1,6 +1,5 @@
 module Helpers 
-  ( spacer
-  , quote
+  ( quote
   , matchParenthesis
   , strReplace
   , unEscape
@@ -26,10 +25,6 @@ closingPar i left (x:xs) = closingPar i (left ++ [x]) xs
 
 matchParenthesis :: [String] -> ([String], [String])
 matchParenthesis = closingPar 0 []
-
-
-spacer :: [String] -> String
-spacer xs = intercalate " " xs
 
 
 quote :: String -> String

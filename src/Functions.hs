@@ -11,7 +11,7 @@ import Data.Map (Map, (!), member, fromList)
 import Text.Regex.TDFA ((=~))
 
 import Context
-import Helpers (strReplace, spacer, capitalize, lower, upper)
+import Helpers (strReplace, capitalize, lower, upper)
 
 
 data Signal = SuppressLine | SuppressAll
@@ -54,7 +54,7 @@ joinF c (x:xs) = Right $ [intercalate x a]
 splitF :: Ctx -> [String] -> Either Signal [String]
 splitF c [] = splitF c [" "]
 splitF c (x:xs) = Right $ filter (/="") (splitOn x a)
-  where a = spacer $ funcArgs (args c) xs
+  where a = unwords $ funcArgs (args c) xs
 
 
 grepF :: Ctx -> [String] -> Either Signal [String]

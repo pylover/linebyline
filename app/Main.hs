@@ -14,7 +14,7 @@ import Evaluator
 
 getScript :: [String] -> String
 getScript [] = ":~"
-getScript s = spacer s
+getScript s = unwords s
 
 
 main :: IO ()

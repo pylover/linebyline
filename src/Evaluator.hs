@@ -7,7 +7,6 @@ module Evaluator
 
 import Text.Read
 
-import Helpers (spacer)
 import Context
 import Parser (Exp(..), parse)
 import Functions (Signal(..), getFunc)
@@ -62,4 +61,4 @@ evaluate c (After a b) = (++) <$> evaluate c a <*> evaluate c b
 
 
 eval :: String -> Int -> String -> Either Signal String 
-eval e i a = spacer <$>  evaluate (Ctx i a [a]) (parse e)
+eval e i a = unwords <$>  evaluate (Ctx i a [a]) (parse e)
