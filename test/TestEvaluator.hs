@@ -98,3 +98,20 @@ test_eval_grep = do
 test_eval_after = do
   assertEqual (Right "a,b a|b") 
     $ ev "split :: join ',' ::: split :: join '|'" "a b"
+
+
+test_search_and_replace = do
+  assertEqual (Right "oof bar") 
+    $ ev "replace foo oof" "foo bar"
+
+  assertEqual (Right "oof oof bar") 
+    $ ev "split :: replace foo oof" "foo foo bar"
+
+  assertEqual (Right "foo bar") 
+    $ ev "replace foo" "foo bar"
+
+  assertEqual (Right "foo bar") 
+    $ ev "replace" "foo bar"
+
+  assertEqual (Right "") 
+    $ ev "replace" ""

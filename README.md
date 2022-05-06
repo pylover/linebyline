@@ -145,6 +145,7 @@ bar
 - `grab pattern`
 - `ignore pattern`
 - `break pattern`
+- `replace pattern replacement ...`
 
 ## Special variables
 

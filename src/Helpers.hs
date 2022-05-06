@@ -4,10 +4,12 @@ module Helpers
   , quote
   , (+?)
   , splitByParenthesis
+  , strReplace
   )  where
 
 
 import Data.List
+import Text.Regex.TDFA
 
 
 splitPar :: Int -> [String] -> [String] -> ([String], [String])
@@ -49,3 +51,10 @@ split_ c n (s:ss)= case stripPrefix n (s:ss) of
 split :: String -> String -> [String]
 split s xs = filter (/="") res
   where res = split_ "" s xs
+
+
+strReplace :: String -> String -> String -> String
+strReplace p r "" = ""
+strReplace p r s = case s =~ p of
+  (b, "", _) -> b
+  (b, x, a) -> b ++ r ++ (strReplace p r a)

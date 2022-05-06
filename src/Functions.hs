@@ -24,6 +24,7 @@ functions = fromList
   , ("grab",  grabF)
   , ("break", breakF)
   , ("ignore", ignoreF)
+  , ("replace", replaceF)
   ]
 
 
@@ -83,3 +84,8 @@ ignoreF c (x:xs) = case any (=~x) a of
   False -> Right a
   where 
     a = funcArgs (args c) xs
+
+
+replaceF :: Ctx -> [String] -> Either Signal [String]
+replaceF c (p:r:xs) = Right $ strReplace p r <$> funcArgs (args c) xs
+replaceF c _ = Right (args c) 
