@@ -4,9 +4,11 @@ module Helpers
   , matchParenthesis
   , strReplace
   , unEscape
+  , capitalize
   )  where
 
 
+import Data.Char (toUpper)
 import Data.List
 import Data.List.Split
 import Text.Regex.TDFA
@@ -47,3 +49,8 @@ strReplace p r "" = ""
 strReplace p r s = case s =~ p of
   (b, "", _) -> b
   (b, x, a) -> b ++ r ++ (strReplace p r a)
+
+
+capitalize :: String -> String
+capitalize "" = ""
+capitalize (x:xs) = toUpper x : xs

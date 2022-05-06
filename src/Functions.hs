@@ -11,7 +11,7 @@ import Data.Map (Map, (!), member, fromList)
 import Text.Regex.TDFA ((=~))
 
 import Context
-import Helpers (strReplace, spacer)
+import Helpers (strReplace, spacer, capitalize)
 
 
 data Signal = SuppressLine | SuppressAll
@@ -23,13 +23,14 @@ type Function = Ctx -> [String] -> Either Signal [String]
 
 functions :: Map String Function
 functions = fromList
-  [ ("join",  joinF)
-  , ("split", splitF)
-  , ("grep",  grepF)
-  , ("grab",  grabF)
-  , ("break", breakF)
-  , ("ignore", ignoreF)
-  , ("replace", replaceF)
+  [ ("join",        joinF       )
+  , ("split",       splitF      )
+  , ("grep",        grepF       )
+  , ("grab",        grabF       )
+  , ("break",       breakF      )
+  , ("ignore",      ignoreF     )
+  , ("replace",     replaceF    )
+  , ("capitalize",  capitalizeF    )
   ]
 
 
@@ -94,3 +95,8 @@ ignoreF c (x:xs) = case any (=~x) a of
 replaceF :: Ctx -> [String] -> Either Signal [String]
 replaceF c (p:r:xs) = Right $ strReplace p r <$> funcArgs (args c) xs
 replaceF c _ = Right (args c) 
+
+
+
+capitalizeF :: Ctx -> [String] -> Either Signal [String]
+capitalizeF c xs = Right $ capitalize <$> funcArgs (args c) xs
