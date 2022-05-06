@@ -71,6 +71,5 @@ parse_ xs = exp <> parse_ rs
   where (exp, rs) = eat xs
 
 
-parse :: String -> [Exp]
-parse s = [(parse_ . tokenize) s]
--- parse s = parse_.tokenize <$> splitOn ":::" s
+parse :: String -> Exp
+parse = parse_ . tokenize

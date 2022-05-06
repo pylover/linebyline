@@ -1,10 +1,7 @@
 module Evaluator 
    ( Signal(..)
    , eval
-   , eval_
    , evaluate
-   , evaluator
-   , Evaluator(..)
    ) where
 
 
@@ -15,9 +12,6 @@ import Context
 import Tokenizer
 import Parser
 import Functions
-
-
-type Evaluator = Int -> String -> Either Signal String
 
 
 getArg :: Ctx -> Int -> String
@@ -65,17 +59,8 @@ evaluate c (Group xs) = evalGroup c xs []
 evaluate c (Func f xs) = evaluate c (Group xs) >>= (getFunc f) c
 evaluate c (Pipe a b) = evaluate c a >>= nb
   where nb x = evaluate (Ctx (index c) (line c) x) b
-
-
-eval_ :: Ctx -> [String] -> [Exp] -> Either Signal String
-eval_ _ y [] = Right $ spacer y
-eval_ c y (x:xs) = evaluate c x >>= next
-  where next r = eval_ c (y ++ r) xs
+evaluate c (After a b) = (++) <$> evaluate c a <*> evaluate c b 
 
 
 eval :: String -> Int -> String -> Either Signal String 
-eval e i a = eval_ (Ctx i a [a]) [] (parse e)
-
-
-evaluator :: String -> Evaluator
-evaluator = eval
+eval e i a = spacer <$>  evaluate (Ctx i a [a]) (parse e)
