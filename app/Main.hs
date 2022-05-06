@@ -1,6 +1,8 @@
 module Main where
 
 
+import System.IO
+import System.Exit
 import Control.Monad
 import Control.Monad.Trans
 import Control.Monad.Trans.Maybe
@@ -31,3 +33,19 @@ liftEval i (Right x) = do
   return (i + 1)
 liftEval i (Left SuppressLine) = return i
 liftEval i (Left SuppressAll) = liftIO exit >> return i
+
+
+liftMaybe :: Maybe a -> MaybeT IO a
+liftMaybe = MaybeT . pure
+
+
+readLine :: MaybeT IO String
+readLine = do
+  isClosed <- lift isEOF
+  if isClosed 
+    then mzero
+    else lift getLine
+
+
+exit :: IO ()
+exit = exitWith ExitSuccess

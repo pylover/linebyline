@@ -3,9 +3,7 @@ module Tokenizer
   ) where
 
 
-import Data.List
-
-import Helpers
+import Helpers ((+?), quote)
 
 
 tokenize_ :: String -> String -> [String]

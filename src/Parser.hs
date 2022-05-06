@@ -1,8 +1,6 @@
 module Parser (Exp(..), parse) where
 
 
-import Data.List
-import Data.List.Split
 import Data.Map (member)
 
 import Helpers
