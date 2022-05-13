@@ -55,11 +55,16 @@ test_func_grep = do
     $ ev "break 'bar'" "baz foo bar"
 
 
--- test_func_capitalize = do
---   assertEqual (Right "Foo bar") $ ev "capitalize" "foo bar"
---   assertEqual (Right "Foo Bar") $ ev "split:: capitalize" "foo bar"
--- 
--- 
--- test_func_upper_lower = do
---   assertEqual (Right "FOO BAR") $ ev "upper" "foo bar"
---   assertEqual (Right "foo bar") $ ev "lower" "FOO BAR"
+test_func_grab = do
+  assertEqual (Right "1,2") 
+    $ ev "split :: grab '[0-9]+' :: join ','" "a 1 2"
+
+
+test_func_capitalize = do
+  assertEqual (Right "Foo bar") $ ev "capitalize" "foo bar"
+  assertEqual (Right "Foo Bar") $ ev "split:: capitalize" "foo bar"
+
+
+test_func_upper_lower = do
+  assertEqual (Right "FOO BAR") $ ev "upper" "foo bar"
+  assertEqual (Right "foo bar") $ ev "lower" "FOO BAR"

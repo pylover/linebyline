@@ -30,13 +30,13 @@ functions = fromList
   [ ("join",        joinF       )
   , ("split",       splitF      )
   , ("grep",        grepF       )
-  -- , ("grab",        grabF       )
+  , ("grab",        grabF       )
   , ("break",       breakF      )
   , ("ignore",      ignoreF     )
   , ("replace",     replaceF    )
-  -- , ("capitalize",  capitalizeF )
-  -- , ("upper",       upperF      )
-  -- , ("lower",       lowerF      )
+  , ("capitalize",  capitalizeF )
+  , ("upper",       upperF      )
+  , ("lower",       lowerF      )
   ]
 
 
@@ -68,15 +68,15 @@ grepF (x:xs) = do
     _ -> return a
   
 
--- grabF :: Ctx -> [String] -> Either Signal [String]
--- grabF c [] = grabF c [".*"]
--- grabF c (x:xs) = case filter (/="") m of
---   [] -> Left SuppressLine
---   y -> Right y
---   where 
---     m = (=~x) <$> funcArgs (args c) xs
--- 
--- 
+grabF :: [String] -> CtxT [String]
+grabF [] = grabF [".*"]
+grabF (x:xs) = do
+  a <- funcArgs xs 
+  case filter (/="") ((=~x) <$> a) of
+    [] -> lift $ Left SuppressLine
+    y -> return y
+
+
 breakF :: [String] -> CtxT [String]
 breakF [] = breakF ["^$"]
 breakF (x:xs) = do
@@ -100,13 +100,13 @@ replaceF (p:r:xs) = funcArgs xs >>= return . fmap (strReplace p r)
 replaceF _ = gets args
 
 
--- capitalizeF :: Ctx -> [String] -> Either Signal [String]
--- capitalizeF c xs = Right $ capitalize <$> funcArgs (args c) xs
--- 
--- 
--- lowerF :: Ctx -> [String] -> Either Signal [String]
--- lowerF c xs = Right $ lower <$> funcArgs (args c) xs
--- 
--- 
--- upperF :: Ctx -> [String] -> Either Signal [String]
--- upperF c xs = Right $ upper <$> funcArgs (args c) xs
+capitalizeF :: [String] -> CtxT [String]
+capitalizeF xs = funcArgs xs >>= return . fmap capitalize
+
+
+lowerF :: [String] -> CtxT [String]
+lowerF xs = funcArgs xs >>= return . fmap lower
+
+
+upperF :: [String] -> CtxT [String]
+upperF xs = funcArgs xs >>= return . fmap upper
