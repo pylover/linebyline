@@ -35,20 +35,20 @@ test_func_search_and_replace = do
     $ ev "replace" ""
 
 
-test_func_grep = do
-  assertEqual (Right "a,1,2") $ ev "split :: grep '[0-9]+' :: join ','" "a 1 2"
-  assertEqual (Right "foo bar") $ ev "grep 'foo'" "foo bar"
-  assertEqual (Right "baz foo bar") $ ev "grep 'foo'" "baz foo bar"
-  assertEqual (Left SuppressLine) $ ev "grep '1'" "baz foo bar"
-  assertEqual (Left SuppressLine) $ ev "ignore 'foo'" "baz foo bar"
-  assertEqual (Left SuppressAll) $ ev "break 'bar'" "baz foo bar"
-
-
-test_func_capitalize = do
-  assertEqual (Right "Foo bar") $ ev "capitalize" "foo bar"
-  assertEqual (Right "Foo Bar") $ ev "split:: capitalize" "foo bar"
-
-
-test_func_upper_lower = do
-  assertEqual (Right "FOO BAR") $ ev "upper" "foo bar"
-  assertEqual (Right "foo bar") $ ev "lower" "FOO BAR"
+-- test_func_grep = do
+--   assertEqual (Right "a,1,2") $ ev "split :: grep '[0-9]+' :: join ','" "a 1 2"
+--   assertEqual (Right "foo bar") $ ev "grep 'foo'" "foo bar"
+--   assertEqual (Right "baz foo bar") $ ev "grep 'foo'" "baz foo bar"
+--   assertEqual (Left SuppressLine) $ ev "grep '1'" "baz foo bar"
+--   assertEqual (Left SuppressLine) $ ev "ignore 'foo'" "baz foo bar"
+--   assertEqual (Left SuppressAll) $ ev "break 'bar'" "baz foo bar"
+-- 
+-- 
+-- test_func_capitalize = do
+--   assertEqual (Right "Foo bar") $ ev "capitalize" "foo bar"
+--   assertEqual (Right "Foo Bar") $ ev "split:: capitalize" "foo bar"
+-- 
+-- 
+-- test_func_upper_lower = do
+--   assertEqual (Right "FOO BAR") $ ev "upper" "foo bar"
+--   assertEqual (Right "foo bar") $ ev "lower" "FOO BAR"

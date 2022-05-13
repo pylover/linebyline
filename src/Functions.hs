@@ -33,7 +33,7 @@ functions = fromList
   -- , ("grab",        grabF       )
   -- , ("break",       breakF      )
   -- , ("ignore",      ignoreF     )
-  -- , ("replace",     replaceF    )
+  , ("replace",     replaceF    )
   -- , ("capitalize",  capitalizeF )
   -- , ("upper",       upperF      )
   -- , ("lower",       lowerF      )
@@ -94,13 +94,13 @@ splitF (x:xs) = funcArgs xs >>= return . filter (/="") . splitOn x . unwords
 --   False -> Right a
 --   where 
 --     a = funcArgs (args c) xs
--- 
--- 
--- replaceF :: Ctx -> [String] -> Either Signal [String]
--- replaceF c (p:r:xs) = Right $ strReplace p r <$> funcArgs (args c) xs
--- replaceF c _ = Right (args c) 
--- 
--- 
+
+
+replaceF :: [String] -> CtxT [String]
+replaceF (p:r:xs) = funcArgs xs >>= return . fmap (strReplace p r)
+replaceF _ = gets args
+
+
 -- capitalizeF :: Ctx -> [String] -> Either Signal [String]
 -- capitalizeF c xs = Right $ capitalize <$> funcArgs (args c) xs
 -- 
