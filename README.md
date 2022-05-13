@@ -142,6 +142,7 @@ bar
 - `join [sep] ...`
 - `split [sep] ...`
 - `grep pattern`
+- `igrep pattern`
 - `grab pattern`
 - `ignore pattern`
 - `break pattern`

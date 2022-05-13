@@ -14,7 +14,7 @@ import Control.Monad.State (lift)
 import Control.Monad.Trans.State (StateT, gets)
 
 import Context
-import Helpers (strReplace, capitalize, lower, upper)
+import Helpers (strReplace, capitalize, lower, upper, (=~?))
 
 
 data Signal = SuppressLine | SuppressAll
@@ -30,6 +30,7 @@ functions = fromList
   [ ("join",        joinF       )
   , ("split",       splitF      )
   , ("grep",        grepF       )
+  , ("igrep",       igrepF      )
   , ("grab",        grabF       )
   , ("break",       breakF      )
   , ("ignore",      ignoreF     )
@@ -66,7 +67,16 @@ grepF (x:xs) = do
   case filter (/="") ((=~x) <$> a) of
     [] -> lift $ Left SuppressLine
     _ -> return a
-  
+
+
+igrepF :: [String] -> CtxT [String]
+igrepF [] = igrepF [".*"]
+igrepF (x:xs) = do
+  a <- funcArgs xs 
+  case filter (/="") ((=~? x) <$> a) of
+    [] -> lift $ Left SuppressLine
+    _ -> return a
+
 
 grabF :: [String] -> CtxT [String]
 grabF [] = grabF [".*"]

@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 module Helpers 
   ( quote
   , matchParenthesis
@@ -6,6 +7,7 @@ module Helpers
   , capitalize
   , lower
   , upper
+  , (=~?)
   )  where
 
 
@@ -59,3 +61,20 @@ lower xs = toLower <$> xs
 
 upper :: String -> String
 upper xs = toUpper <$> xs
+
+
+caseInsensitive :: CompOption
+caseInsensitive = CompOption 
+  { caseSensitive = False
+  , multiline = False
+  , rightAssoc = True
+  , newSyntax = True
+  , lastStarGreedy = False
+  }
+
+
+(=~?) :: ( RegexMaker Regex CompOption ExecOption source
+         , RegexContext Regex source1 target 
+         ) => source1 -> source -> target
+source1 =~? source 
+  = match (makeRegexOpts caseInsensitive defaultExecOpt source) source1

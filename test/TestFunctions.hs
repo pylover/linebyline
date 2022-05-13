@@ -55,6 +55,11 @@ test_func_grep = do
     $ ev "break 'bar'" "baz foo bar"
 
 
+test_func_igrep = do
+  assertEqual (Right "A,1,2") 
+    $ ev "split :: igrep '[a-z]+' :: join ','" "A 1 2"
+
+
 test_func_grab = do
   assertEqual (Right "1,2") 
     $ ev "split :: grab '[0-9]+' :: join ','" "a 1 2"
