@@ -7,64 +7,59 @@ import Test.Framework
 import Parser
 import Context
 import Evaluator
+import Control.Monad.Trans.State (evalStateT)
 
 
 main = htfMain htf_thisModulesTests
 
 
 ev e a = eval e 0 a
+evz e = eval e 0 ""
+
+evc e c = evalStateT (evaluate (parse e)) c
 
 
-test_evaluate_literal = do
-  assertEqual (Right ["foo bar baz"])
-    $ evaluate (Ctx 0 "" []) (parse "join ' ' foo bar baz")
-
-  assertEqual (Right ["foo,bar,baz"])
-    $ evaluate (Ctx 0 "" []) (parse "join ',' foo bar baz")
-
-  assertEqual (Right ["foo,bar,baz"]) 
-    $ evaluate (Ctx 0 "" []) (parse "join , foo bar baz")
-
-  assertEqual (Right ["foo::bar::baz"]) 
-    $ evaluate (Ctx 0 "" []) (parse "join '::' foo bar baz")
-
-  assertEqual (Right ["foo:bar:baz"]) 
-    $ evaluate (Ctx 0 "" []) (parse "join : foo bar baz")
+test_eval_literal = do
+  assertEqual (Right "foo bar baz") $ evz "join ' ' foo bar baz"
+  assertEqual (Right "foo,bar,baz") $ evz "join ',' foo bar baz"
+  assertEqual (Right "foo,bar,baz") $ evz "join , foo bar baz"
+  assertEqual (Right "foo::bar::baz") $ evz "join '::' foo bar baz"
+  assertEqual (Right "foo:bar:baz") $ evz "join ':' foo bar baz"
 
 
 test_evaluate_var = do
   assertEqual (Right ["foo", "bar", "baz"]) 
-    $ evaluate (Ctx 0 "" ["foo", "bar"]) (parse ":0 :1 baz")
+    $ evc ":0 :1 baz" (Ctx 0 "" ["foo", "bar"]) 
 
   assertEqual (Right ["foo", "bar", ":2"]) 
-    $ evaluate (Ctx 0 "" ["foo", "bar"]) (parse ":0 :1 :2")
+    $ evc ":0 :1 :2" (Ctx 0 "" ["foo", "bar"]) 
 
   assertEqual (Right ["foo", "bar", ":2"]) 
-    $ evaluate (Ctx 0 "" ["foo", "bar"]) (parse ":0 :1 :2")
+    $ evc ":0 :1 :2" (Ctx 0 "" ["foo", "bar"]) 
 
   assertEqual (Right ["foo", "bar", ":baz"]) 
-    $ evaluate (Ctx 0 "" ["foo", "bar"]) (parse ":0 :1 :baz")
+    $ evc ":0 :1 :baz" (Ctx 0 "" ["foo", "bar"]) 
 
   assertEqual (Right ["a", "b", "c", "d"]) 
-    $ evaluate (Ctx 0 "" ["a", "b", "c", "d"]) (parse ":0~")
+    $ evc ":0~" (Ctx 0 "" ["a", "b", "c", "d"]) 
 
   assertEqual (Right ["a", "b", "c"]) 
-    $ evaluate (Ctx 0 "" ["a", "b", "c", "d"]) (parse ":0~2")
+    $ evc ":0~2" (Ctx 0 "" ["a", "b", "c", "d"]) 
 
   assertEqual (Right ["a", "b", "c"]) 
-    $ evaluate (Ctx 0 "" ["a", "b", "c", "d"]) (parse ":~2")
+    $ evc ":~2" (Ctx 0 "" ["a", "b", "c", "d"]) 
 
   assertEqual (Right ["a", "b", "c", "d"]) 
-    $ evaluate (Ctx 0 "" ["a", "b", "c", "d"]) (parse ":~")
+    $ evc ":~" (Ctx 0 "" ["a", "b", "c", "d"]) 
 
   assertEqual (Right ["2"]) 
-    $ evaluate (Ctx 2 "" []) (parse ":n")
+    $ evc ":n" (Ctx 2 "" []) 
 
   assertEqual (Right [""]) 
-    $ evaluate (Ctx 2 "" ["foo bar"]) (parse ":l")
+    $ evc ":l" (Ctx 2 "" ["foo bar"]) 
 
   assertEqual (Right ["baz qux"]) 
-    $ evaluate (Ctx 2 "baz qux" ["foo bar"]) (parse ":l")
+    $ evc ":l" (Ctx 2 "baz qux" ["foo bar"]) 
 
 
 test_eval = do

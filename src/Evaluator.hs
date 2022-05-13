@@ -5,60 +5,68 @@ module Evaluator
    ) where
 
 
-import Text.Read
+import Text.Read (readMaybe)
+import Control.Monad.State (lift)
+import Control.Monad.Trans.State (StateT, evalStateT, get, gets, put)
 
 import Context
 import Parser (Exp(..), parse)
-import Functions (Signal(..), getFunc)
+import Functions (Signal(..), getFunc, CtxT(..) )
 
 
-getArg :: Ctx -> Int -> String
-getArg (Ctx _ _ xs) i 
-  | i < l = xs !! i
-  | otherwise = ":" ++ show i
-  where l = length xs
+getArg :: Int -> CtxT String
+getArg i = do
+  args_ <- gets args
+  if i < (length args_)
+    then return $ args_ !! i
+    else return $ ":" ++ show i
 
 
-evalVar :: Ctx -> String -> String
-evalVar c "n" = show $ index c
-evalVar c "l" = line c
-evalVar c n = case readMaybe n of
-  Just a -> getArg c a
-  Nothing -> ':' : n
+evalVar :: String -> CtxT String
+evalVar "n" = show <$> gets index
+evalVar "l" = gets line
+evalVar n = case readMaybe n of
+  Just x -> getArg x
+  Nothing -> return $ ':' : n
 
 
-evalSliceVar :: Ctx -> String -> String -> [String]
-evalSliceVar c "" "" = args c
-evalSliceVar c a "" = case readMaybe a of
-  Just x -> drop x (args c) 
-  Nothing -> [":" ++ a ++ "~"]
-evalSliceVar c "" a = case readMaybe a of
-  Just x -> take (x + 1) (args c)
-  _ -> [":~" ++ a]
-evalSliceVar c a b = case readMaybe <$> [a, b] of
-  [Just x, Just y] -> drop x $ take (y + 1) $ args c
-  _ -> [":" ++ a ++ "~" ++ b]
+evalSliceVar :: String -> String -> CtxT [String]
+evalSliceVar "" "" = gets args
+evalSliceVar a "" = case readMaybe a of
+  Just x -> drop x <$> gets args
+  Nothing -> return [":" ++ a ++ "~"]
+evalSliceVar "" a = case readMaybe a of
+  Just x -> take (x + 1) <$> gets args
+  _ -> return [":~" ++ a]
+evalSliceVar a b = case readMaybe <$> [a, b] of
+  [Just x, Just y] -> (drop x) . (take (y + 1)) <$> gets args
+  _ -> return [":" ++ a ++ "~" ++ b]
 
 
-evalGroup :: Ctx -> [Exp] -> [String] -> Either Signal [String]
-evalGroup c [] r = Right r
-evalGroup c (x:xs) r = case evaluate c x of
-  Right rs -> evalGroup c xs (r ++ rs)
-  ls -> ls
-
-
-evaluate :: Ctx -> Exp -> Either Signal [String]
-evaluate _ Void = Right []
-evaluate _ (Literal a) = Right [a]
-evaluate c (Var a) = case break (=='~') a of
-  (l, "") -> Right [evalVar c l]
-  (l, _:r) -> Right $ evalSliceVar c l r
-evaluate c (Group xs) = evalGroup c xs []
-evaluate c (Func f xs) = evaluate c (Group xs) >>= (getFunc f) c
-evaluate c (Pipe a b) = evaluate c a >>= nb
-  where nb x = evaluate (Ctx (index c) (line c) x) b
-evaluate c (After a b) = (++) <$> evaluate c a <*> evaluate c b 
+evaluate :: Exp -> CtxT [String]
+evaluate Void = return []
+evaluate (Literal a) = return [a]
+evaluate (Var a) = case break (=='~') a of
+  (l, "") -> (:[]) <$> evalVar l
+  (l, _:r) -> evalSliceVar l r
+evaluate (Group xs) = sequence (evaluate <$> xs) >>= return . mconcat
+evaluate (Func f xs) = evaluate (Group xs) >>= getFunc f
+evaluate (Pipe a b) = do
+  ra <- evaluate a
+  i <- gets index
+  l <- gets line
+  put $ Ctx i l ra
+  evaluate b
+evaluate (After a b) = do
+  c <- get 
+  ra <- evaluate a
+  put c
+  rb <- evaluate b
+  return $ ra ++ rb 
 
 
 eval :: String -> Int -> String -> Either Signal String 
-eval e i a = unwords <$>  evaluate (Ctx i a [a]) (parse e)
+eval e i a = evalStateT getExp getCtx >>= return . unwords
+  where 
+    getExp = evaluate (parse e)
+    getCtx = Ctx i a [a]
