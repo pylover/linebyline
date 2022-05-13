@@ -29,10 +29,10 @@ functions :: Map String Function
 functions = fromList
   [ ("join",        joinF       )
   , ("split",       splitF      )
-  -- , ("grep",        grepF       )
+  , ("grep",        grepF       )
   -- , ("grab",        grabF       )
-  -- , ("break",       breakF      )
-  -- , ("ignore",      ignoreF     )
+  , ("break",       breakF      )
+  , ("ignore",      ignoreF     )
   , ("replace",     replaceF    )
   -- , ("capitalize",  capitalizeF )
   -- , ("upper",       upperF      )
@@ -59,16 +59,15 @@ splitF [] = splitF [" "]
 splitF (x:xs) = funcArgs xs >>= return . filter (/="") . splitOn x . unwords
 
 
--- grepF :: Ctx -> [String] -> Either Signal [String]
--- grepF c [] = grepF c [".*"]
--- grepF c (x:xs) = case filter (/="") m of
---   [] -> Left SuppressLine
---   _ -> Right a
---   where 
---     a = funcArgs (args c) xs
---     m = (=~x) <$> a
--- 
--- 
+grepF :: [String] -> CtxT [String]
+grepF [] = grepF [".*"]
+grepF (x:xs) = do
+  a <- funcArgs xs 
+  case filter (/="") ((=~x) <$> a) of
+    [] -> lift $ Left SuppressLine
+    _ -> return a
+  
+
 -- grabF :: Ctx -> [String] -> Either Signal [String]
 -- grabF c [] = grabF c [".*"]
 -- grabF c (x:xs) = case filter (/="") m of
@@ -78,22 +77,22 @@ splitF (x:xs) = funcArgs xs >>= return . filter (/="") . splitOn x . unwords
 --     m = (=~x) <$> funcArgs (args c) xs
 -- 
 -- 
--- breakF :: Ctx -> [String] -> Either Signal [String]
--- breakF c [] = breakF c ["^$"]
--- breakF c (x:xs) = case any (=~x) a of
---   True -> Left SuppressAll
---   False -> Right a
---   where 
---     a = funcArgs (args c) xs
--- 
--- 
--- ignoreF :: Ctx -> [String] -> Either Signal [String]
--- ignoreF c [] = ignoreF c ["^$"]
--- ignoreF c (x:xs) = case any (=~x) a of
---   True -> Left SuppressLine
---   False -> Right a
---   where 
---     a = funcArgs (args c) xs
+breakF :: [String] -> CtxT [String]
+breakF [] = breakF ["^$"]
+breakF (x:xs) = do
+  a <- funcArgs xs
+  case any (=~x) a of
+    True -> lift $ Left SuppressAll
+    False -> return a
+
+
+ignoreF :: [String] -> CtxT [String]
+ignoreF [] = ignoreF ["^$"]
+ignoreF (x:xs) = do
+  a <- funcArgs xs
+  case any (=~x) a of
+    True -> lift $ Left SuppressLine
+    False -> return a
 
 
 replaceF :: [String] -> CtxT [String]
