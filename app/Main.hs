@@ -1,11 +1,16 @@
 module Main where
 
 
-import System.IO
-import System.Exit
-import Control.Monad
-import Control.Monad.Trans
-import Control.Monad.Trans.Maybe
+import System.IO 
+  ( Handle
+  , hGetLine
+  , hIsEOF
+  , IOMode(..)
+  , openFile
+  , stdin
+  , hClose
+  )
+import System.Exit (ExitCode(..), exitWith)
 
 import Helpers
 import CLI
@@ -17,37 +22,48 @@ getScript [] = ":~"
 getScript s = unwords s
 
 
+getFile :: String -> IO Handle
+getFile "-" = return stdin
+getFile x = openFile x ReadMode
+
+
+type Eval = Int -> String -> Either Signal String
+
+
 main :: IO ()
 main = do
-  a <- parseArgs
-  print a
-  evaluator a >>= runMaybeT . loop 1 >> return ()
+  (Args inps s) <- parseArgs 
+  process (e s) inps
+  return ()
   where 
-    evaluator (Args s) = return $ eval (getScript s)
-    loop i e = readLine >>= process >>= reloop
-      where 
-        process = liftEval i . e i 
-        reloop ni = loop ni e
+    e x = eval $ getScript x
 
 
-liftEval :: Int -> Either Signal String -> MaybeT IO Int
-liftEval i (Right x) = do
-  liftIO $ putStrLn x
-  return (i + 1)
-liftEval i (Left SuppressLine) = return i
-liftEval i (Left SuppressAll) = liftIO exit >> return i
+process :: Eval -> [String] -> IO Int
+process e [] = process e ["-"]
+process e xs = loopFiles e xs 1
 
 
-liftMaybe :: Maybe a -> MaybeT IO a
-liftMaybe = MaybeT . pure
+loopFiles :: Eval -> [String] -> Int -> IO Int
+loopFiles e [] i = return i
+loopFiles e (f:fx) i = do
+  h <- getFile f
+  j <- loopLines e h i >>= loopFiles e fx
+  hClose h
+  return j
 
 
-readLine :: MaybeT IO String
-readLine = do
-  isClosed <- lift isEOF
-  if isClosed 
-    then mzero
-    else lift getLine
+loopLines :: Eval -> Handle -> Int -> IO Int
+loopLines e h i = do
+  isClosed <- hIsEOF h
+  if isClosed
+    then return i
+    else do
+      l <- hGetLine h
+      case e i l of 
+        Left SuppressLine -> loopLines e h i
+        Left SuppressAll -> exit >> return i
+        Right r -> putStrLn r >> loopLines e h (i + 1)
 
 
 exit :: IO ()

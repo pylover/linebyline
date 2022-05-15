@@ -4,3 +4,7 @@
 - Readme, Mention about function arguments behaviour.
 - Haddock
 - Update changelog
+- Input filename as a varibale
+- Output filename as a variable
+- debian package
+- head and tail functions
