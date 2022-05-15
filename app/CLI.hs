@@ -32,7 +32,8 @@ inputsParser = many (strOption
  <> short 'i'
  <> metavar "FILENAME"
  <> help "Input file. otherwise standard input will be choosen. this option\
-         \can be specified multiple times."))
+        \ can be specified multiple times and you may use '-' for\
+        \ standard input."))
 
 
 appInfo :: InfoMod s
