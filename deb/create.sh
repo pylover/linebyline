@@ -5,7 +5,7 @@ HERE=`dirname "$(readlink -f "$BASH_SOURCE")"`
 APP_PATH=$(readlink -f $HERE/..)
 REVISION=1
 LBL="${HERE}/lbl"
-ARCH="amd64"
+ARCH=$(dpkg-architecture -qDEB_BUILD_ARCH)
 
 
 # Build a very own linebyline to use inside this script
