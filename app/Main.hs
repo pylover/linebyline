@@ -44,10 +44,13 @@ main = do
 
 loopFiles :: [String] -> EvalStateT ()
 loopFiles [] = return ()
-loopFiles (f:fx) = do
-  h <- getFile f
-  loopLines h
-  loopFiles fx
+loopFiles (f:fx) = withFile f loopLines >> loopFiles fx
+
+
+withFile :: FilePath -> (Handle -> EvalStateT ()) -> EvalStateT () 
+withFile fn f = do
+  h <- getFile fn
+  f h
   lift $ hClose h
   where
     getFile "-" = return stdin
