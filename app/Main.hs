@@ -12,7 +12,11 @@ import System.IO
   )
 import System.Exit (ExitCode(..), exitWith)
 import Control.Monad.State (lift)
-import Control.Monad.Trans.State (StateT, modify', gets, runStateT)
+import Control.Monad.Trans.State 
+  ( StateT
+  , modify'
+  , gets
+  , evalStateT)
 
 import Helpers
 import CLI
@@ -27,26 +31,24 @@ type EvalStateT a = StateT EvalState IO a
 main :: IO ()
 main = do
   (Args inps s) <- parseArgs 
-  runStateT (process inps) (EvalState 1 (eval_ s))
-  return ()
+  evalStateT (process inps) (EvalState 1 (eval_ s))
   where 
     eval_ :: [String] -> Eval
     eval_ [] = eval_ [":~"]
     eval_ xs = eval $ unwords xs
 
-    process :: [String] -> EvalStateT Int
+    process :: [String] -> EvalStateT ()
     process [] = process ["-"]
     process xs = loopFiles xs
 
 
-loopFiles :: [String] -> EvalStateT Int
-loopFiles [] = gets line
+loopFiles :: [String] -> EvalStateT ()
+loopFiles [] = return ()
 loopFiles (f:fx) = do
   h <- getFile f
   loopLines h
   loopFiles fx
   lift $ hClose h
-  gets line
   where
     getFile "-" = return stdin
     getFile x = lift $ openFile x ReadMode
