@@ -19,16 +19,6 @@ import CLI
 import Evaluator
 
 
-getScript :: [String] -> String
-getScript [] = ":~"
-getScript s = unwords s
-
-
-getFile :: String -> IO Handle
-getFile "-" = return stdin
-getFile x = openFile x ReadMode
-
-
 type Eval = Int -> String -> Either Signal String
 data EvalState = EvalState {line :: Int, evaluator :: Eval}
 type EvalStateT a = StateT EvalState IO a
@@ -37,25 +27,29 @@ type EvalStateT a = StateT EvalState IO a
 main :: IO ()
 main = do
   (Args inps s) <- parseArgs 
-  runStateT (process inps) (EvalState 1 (e s))
+  runStateT (process inps) (EvalState 1 (eval_ s))
   return ()
   where 
-    e x = eval $ getScript x
+    eval_ :: [String] -> Eval
+    eval_ [] = eval_ [":~"]
+    eval_ xs = eval $ unwords xs
 
-
-process :: [String] -> EvalStateT Int
-process [] = process ["-"]
-process xs = loopFiles xs
+    process :: [String] -> EvalStateT Int
+    process [] = process ["-"]
+    process xs = loopFiles xs
 
 
 loopFiles :: [String] -> EvalStateT Int
 loopFiles [] = gets line
 loopFiles (f:fx) = do
-  h <- lift $ getFile f
+  h <- getFile f
   loopLines h
   loopFiles fx
   lift $ hClose h
   gets line
+  where
+    getFile "-" = return stdin
+    getFile x = lift $ openFile x ReadMode
 
 
 loopLines :: Handle -> EvalStateT ()
