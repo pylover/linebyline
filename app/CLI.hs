@@ -10,7 +10,7 @@ import Paths_linebyline (version)
 data Args = Args
   { script :: [String]
   }
-
+  deriving Show
 
 versionParser :: Parser (a -> a)
 versionParser = infoOption (showVersion version)

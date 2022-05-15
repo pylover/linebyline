@@ -18,7 +18,10 @@ getScript s = unwords s
 
 
 main :: IO ()
-main = parseArgs >>= evaluator >>= runMaybeT . loop 1 >> return ()
+main = do
+  a <- parseArgs
+  print a
+  evaluator a >>= runMaybeT . loop 1 >> return ()
   where 
     evaluator (Args s) = return $ eval (getScript s)
     loop i e = readLine >>= process >>= reloop

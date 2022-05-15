@@ -106,6 +106,7 @@ ignoreF (x:xs) = do
 
 
 replaceF :: [String] -> CtxT [String]
+replaceF [p] = replaceF [p, ""]
 replaceF (p:r:xs) = funcArgs xs >>= return . fmap (strReplace p r)
 replaceF _ = gets args
 

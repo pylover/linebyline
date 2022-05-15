@@ -25,7 +25,7 @@ test_func_search_and_replace = do
   assertEqual (Right "oof oof bar") 
     $ ev "split :: replace foo oof" "foo foo bar"
 
-  assertEqual (Right "foo bar") 
+  assertEqual (Right " bar") 
     $ ev "replace foo" "foo bar"
 
   assertEqual (Right "foo bar") 
@@ -33,6 +33,9 @@ test_func_search_and_replace = do
 
   assertEqual (Right "") 
     $ ev "replace" ""
+
+  assertEqual (Right "foo bar") 
+    $ ev "replace '\"' ''" "\"foo bar\""
 
 
 test_func_grep = do
