@@ -11,6 +11,8 @@ import System.IO
   , hClose
   )
 import System.Exit (ExitCode(..), exitWith)
+import Control.Monad.State (lift)
+import Control.Monad.Trans.State (StateT, modify', gets, runStateT)
 
 import Helpers
 import CLI
@@ -28,42 +30,54 @@ getFile x = openFile x ReadMode
 
 
 type Eval = Int -> String -> Either Signal String
+data EvalState = EvalState {line :: Int, evaluator :: Eval}
+type EvalStateT a = StateT EvalState IO a
 
 
 main :: IO ()
 main = do
   (Args inps s) <- parseArgs 
-  process (e s) inps
+  runStateT (process inps) (EvalState 1 (e s))
   return ()
   where 
     e x = eval $ getScript x
 
 
-process :: Eval -> [String] -> IO Int
-process e [] = process e ["-"]
-process e xs = loopFiles e xs 1
+process :: [String] -> EvalStateT Int
+process [] = process ["-"]
+process xs = loopFiles xs
 
 
-loopFiles :: Eval -> [String] -> Int -> IO Int
-loopFiles e [] i = return i
-loopFiles e (f:fx) i = do
-  h <- getFile f
-  j <- loopLines e h i >>= loopFiles e fx
-  hClose h
-  return j
+loopFiles :: [String] -> EvalStateT Int
+loopFiles [] = gets line
+loopFiles (f:fx) = do
+  h <- lift $ getFile f
+  loopLines h
+  loopFiles fx
+  lift $ hClose h
+  gets line
 
 
-loopLines :: Eval -> Handle -> Int -> IO Int
-loopLines e h i = do
-  isClosed <- hIsEOF h
+loopLines :: Handle -> EvalStateT ()
+loopLines h = do
+  isClosed <- lift $ hIsEOF h
   if isClosed
-    then return i
+    then return ()
     else do
-      l <- hGetLine h
+      l <- lift $ hGetLine h
+      e <- gets evaluator
+      i <- gets line
       case e i l of 
-        Left SuppressLine -> loopLines e h i
-        Left SuppressAll -> exit >> return i
-        Right r -> putStrLn r >> loopLines e h (i + 1)
+        Left SuppressLine -> loopLines h
+        Left SuppressAll -> lift exit
+        Right r -> do
+          lift $ putStrLn r
+          modify' nextLine
+          loopLines h
+
+
+nextLine :: EvalState -> EvalState
+nextLine (EvalState l e) = EvalState (l + 1) e
 
 
 exit :: IO ()
