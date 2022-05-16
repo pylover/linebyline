@@ -25,7 +25,7 @@ DEB_NAME="${APP_NAME}_${APP_VERSION}-${REVISION}-${ARCH}"
 
 
 # Create target directories
-WORKING_DIR=$DEB_NAME
+WORKING_DIR=$HERE/$DEB_NAME
 if [ -d $WORKING_DIR ]; then
   echo "Removing previous build working directory: ${WORKING_DIR}"
   rm -r $WORKING_DIR
@@ -55,4 +55,4 @@ rm -rf debian
 cd ..
 
 # Build
-dpkg-deb --build --root-owner-group $DEB_NAME
+dpkg-deb --build --root-owner-group $WORKING_DIR

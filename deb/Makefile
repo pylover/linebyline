@@ -1,7 +1,7 @@
 
-.PHONY: create
-create:
-	./create.sh
+.PHONY: build
+build:
+	./build.sh
 
 
 .PHONY: clean
