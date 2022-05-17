@@ -8,7 +8,8 @@ import Paths_linebyline (version)
 
 
 data Args = Args
-  { inputs :: [String]
+  { inputs :: [FilePath]
+  , output :: FilePath
   , script :: [String]
   }
   deriving Show
@@ -26,7 +27,7 @@ scriptParser = many ( strArgument (
   <> help "Line by line script to execute line-by-line on input." )))
 
 
-inputsParser :: Parser [String]
+inputsParser :: Parser [FilePath]
 inputsParser = many (strOption
   ( long "input"
  <> short 'i'
@@ -34,6 +35,15 @@ inputsParser = many (strOption
  <> help "Input file. otherwise standard input will be choosen. this option\
         \ can be specified multiple times and you may use '-' for\
         \ standard input."))
+
+
+outputParser :: Parser FilePath
+outputParser = strOption
+  ( long "output"
+ <> short 'o'
+ <> metavar "FILENAME"
+ <> value "-"
+ <> help "Output filename, default: standard output")
 
 
 appInfo :: InfoMod s
@@ -45,6 +55,7 @@ appInfo = fullDesc
 args :: Parser Args
 args = Args 
    <$> inputsParser 
+   <*> outputParser 
    <*> scriptParser 
       
 

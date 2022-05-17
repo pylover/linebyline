@@ -8,7 +8,11 @@ import System.IO
   , IOMode(..)
   , openFile
   , stdin
+  , stdout
   , hClose
+  , hPutStrLn
+  , hFlush
+  , withFile
   )
 import System.Exit (ExitCode(..), exitWith)
 import Control.Monad.State (lift)
@@ -24,15 +28,16 @@ import Evaluator
 
 
 type Eval = Int -> String -> Either Signal String
-data EvalState = EvalState {line :: Int, evaluator :: Eval}
+data EvalState = EvalState {line :: Int, evaluator :: Eval, outfile :: Handle}
 type EvalStateT a = StateT EvalState IO a
 
 
 main :: IO ()
 main = do
-  (Args inps s) <- parseArgs 
-  evalStateT (process inps) (EvalState 1 (eval_ s))
+  (Args inps out s) <- parseArgs 
+  withOutFile out (dodo inps s)
   where 
+    dodo i s o = (evalStateT (process i) (EvalState 1 (eval_ s) o))
     eval_ :: [String] -> Eval
     eval_ [] = eval_ [":~"]
     eval_ xs = eval $ unwords xs
@@ -40,15 +45,18 @@ main = do
     process :: [String] -> EvalStateT ()
     process [] = process ["-"]
     process xs = loopFiles xs
+  
+    withOutFile "-" f = f stdout
+    withOutFile fn f = withFile fn WriteMode f
 
 
-loopFiles :: [String] -> EvalStateT ()
+loopFiles :: [FilePath] -> EvalStateT ()
 loopFiles [] = return ()
-loopFiles (f:fx) = withFile f loopLines >> loopFiles fx
+loopFiles (f:fx) = withInputFile f loopLines >> loopFiles fx
 
 
-withFile :: FilePath -> (Handle -> EvalStateT ()) -> EvalStateT () 
-withFile fn f = do
+withInputFile :: FilePath -> (Handle -> EvalStateT ()) -> EvalStateT () 
+withInputFile fn f = do
   h <- getFile fn
   f h
   lift $ hClose h
@@ -70,13 +78,14 @@ loopLines h = do
         Left SuppressLine -> loopLines h
         Left SuppressAll -> lift exit
         Right r -> do
-          lift $ putStrLn r
+          o <- gets outfile
+          lift $ hPutStrLn o r
           modify' nextLine
           loopLines h
 
 
 nextLine :: EvalState -> EvalState
-nextLine (EvalState l e) = EvalState (l + 1) e
+nextLine (EvalState l e o) = EvalState (l + 1) e o
 
 
 exit :: IO ()
