@@ -1,8 +1,9 @@
 
-.PHONY: build
-build:
+linebyline: build.sh
 	./build.sh
 
 
-# .PHONY: clean
-# clean:
+.PHONY: clean
+clean:
+	-rm lbl
+	-rm linebyline

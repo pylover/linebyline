@@ -6,7 +6,7 @@ cabal-version: 1.12
 
 name:           linebyline
 version:        0.2.15.1
-description:    Line-by-line text editor, see: <https://github.com/pylover/linebyline#readme>.
+description:    Simple & easy to learn command line text editor."
 homepage:       https://github.com/pylover/linebyline#readme
 bug-reports:    https://github.com/pylover/linebyline/issues
 author:         Vahid Mardani

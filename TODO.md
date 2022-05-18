@@ -8,3 +8,4 @@
 - Output filename as a variable
 - debian package
 - head and tail functions
+- substring
