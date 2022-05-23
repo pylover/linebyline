@@ -9,3 +9,4 @@
 - debian package
 - head and tail functions
 - substring
+- Skip and take lines commands
