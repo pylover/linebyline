@@ -54,5 +54,14 @@ dpkg-shlibdeps -O usr/local/bin/lbl >> DEBIAN/control
 rm -rf debian
 cd ..
 
+
+# Manual page
+mkdir -p $WORKING_DIR/usr/share/man/man1
+cd ../man
+make clean ${APP_NAME}.1
+cd ../deb
+cp "../man/${APP_NAME}.1" $WORKING_DIR/usr/share/man/man1
+
+
 # Build
 dpkg-deb --build --root-owner-group $WORKING_DIR

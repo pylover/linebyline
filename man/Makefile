@@ -1,9 +1,11 @@
+linebyline.1:
+	./create.sh
 
-linebyline: build.sh
-	./build.sh
-
+.PHONY: show
+show: linebyline.1
+	man "./$<"
 
 .PHONY: clean
 clean:
-	-rm lbl
-	-rm linebyline
+	-rm linebyline.md
+	-rm linebyline.1

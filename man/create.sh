@@ -3,11 +3,12 @@
 # Issue some variables as usual!
 HERE=`dirname "$(readlink -f "$BASH_SOURCE")"`
 APP_PATH=$(readlink -f $HERE/..)
-REVISION=1
+MDFILE="${HERE}/linebyline.md"
 LBL="${HERE}/lbl"
 
 # Build a very own linebyline to use inside this script
 stack install --local-bin-path $HERE $APP_PATH
+
 
 # Grab the application name and version from ../package.yaml
 APP_VERSION=$(cat $APP_PATH/package.yaml | $LBL grep version :: split :: :1)
@@ -18,25 +19,35 @@ APP_MAINTAINER=$(cat $APP_PATH/package.yaml | $LBL \
   grep maintainer :: split :: :1~ :: split '"')
 APP_DESCRIPTION=$(cat $APP_PATH/package.yaml | $LBL \
   grep '^description' :: split :: :1~ :: split '"')
+DEB_NAME="${APP_NAME}_${APP_VERSION}-${REVISION}-${ARCH}"
 
-TODAY=`date +"%d %b %Y"`
 
-echo "\
-.\" Manpage for ${APP_NAME}.
-.\" Contact ${APP_MAINTAINER} to correct errors or typos.
-.TH man 1 "${TODAY}" "${APP_VERSION}" "${APP_NAME} man page"
-.SH NAME
-${APP_NAME} \- ${APP_DESCRIPTION}
-.SH SYNOPSIS
-$(lbl --help | head -n 4 | tail -n 2 | lbl replace "'Usage: '" '' :: replace "'       '" '') 
-.SH DESCRIPTION
-${APP_NAME} is high level shell program for adding users to LDAP server.  On Debian, administrators should usually use nuseradd.debian(8) instead.
-.SH OPTIONS
-The ${APP_NAME} does not take any options. However, you can supply username.
-.SH SEE ALSO
-useradd(8), passwd(5), ${APP_NAME}.debian(8)
-.SH BUGS
-No known bugs.
-.SH AUTHOR
-${APP_AUTHOR} (${APP_MAINTAINER})
-" > $HERE/linebyline
+SYN=$($LBL --help | tail -n+3 | head -n2 | sed 's/^Usage: //g' | sed 's/^       //g')
+DESC=$($LBL --help | tail -n+7)
+
+echo "# ${APP_NAME}
+
+## Name
+
+**${APP_NAME}** - ${APP_DESCRIPTION} 
+
+## Synopsis
+
+${SYN}
+
+## Options
+
+${DESC}
+
+" > $MDFILE
+
+
+cat README.md >> $MDFILE
+
+md2man $MDFILE \
+  -o "${APP_NAME}.1" \
+  --author "$APP_AUTHOR" \
+  --email "$APP_MAINTAINER" \
+  --revision "$APP_VERSION" \
+  --section 1 \
+  --book "${APP_NAME} manual page"

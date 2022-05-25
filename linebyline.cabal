@@ -5,7 +5,7 @@ cabal-version: 1.12
 -- see: https://github.com/sol/hpack
 
 name:           linebyline
-version:        0.2.15.1
+version:        0.2.15.2
 description:    Simple & easy to learn command line text editor."
 homepage:       https://github.com/pylover/linebyline#readme
 bug-reports:    https://github.com/pylover/linebyline/issues
