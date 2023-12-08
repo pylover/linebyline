@@ -59,7 +59,6 @@ args = Args
    <*> scriptParser 
       
 
-
 parseArgs :: IO Args
 parseArgs = customExecParser (prefs helpShowGlobals) opts
   where opts = info (args <**> versionParser <**> helper) appInfo
